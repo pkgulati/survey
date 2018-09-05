@@ -1,0 +1,23 @@
+{
+  "name": "oe-field-behavior",
+  "main": "oe-field-behavior.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "version": "1.5.0",
+  "_release": "1.5.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.5.0",
+    "commit": "e0496fe2a0f7840b91006c1df289273897e65cc8"
+  },
+  "_source": "http://10.73.97.24/oecloud.io/oe-field-behavior.git",
+  "_target": "^1.0.0",
+  "_originalSource": "oe-field-behavior"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "sinon-chai",
+  "version": "2.14.0",
+  "_release": "2.14.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.14.0",
+    "commit": "3ddf66c1d706aa14178753587d038a104153fb60"
+  },
+  "_source": "git://10.188.25.62:9006/sinon-chai",
+  "_target": "^2.7.0",
+  "_originalSource": "sinon-chai"
+}

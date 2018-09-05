@@ -8,30 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer.html">
 
 <link rel="import" href="app-icons.html">
-
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-styles/shadow.html">
-
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-
-<link rel="import" href="survey-form.html">
 
 <dom-module id="survey-app">
 
@@ -125,7 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .pages-container {
         width: 100vw;
-        display : flex;
+        display: flex;
       }
 
       article-detail {
@@ -166,7 +144,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           margin: 0;
           margin-bottom: 64px;
         }
-       
+
 
       }
     </style>
@@ -186,14 +164,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-toolbar></app-toolbar>
 
             <app-toolbar class="title-toolbar nav-title-toolbar">
-                <div class="nav-title">
-                    Flood Devastation Index
-                  </div>
+              <div class="nav-title">
+                Flood Devastation Index
+              </div>
             </app-toolbar>
 
           </app-header>
 
-          
+
           <!-- nav menu -->
           <iron-selector class="nav-menu" attr-for-selected="name" on-iron-activate="_drawerSelected">
             <!-- <a name="home" href="/">Home</a>
@@ -213,13 +191,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- menu button -->
             <paper-icon-button drawer-toggle icon="app:menu"></paper-icon-button>
             <div class="title">Flood Devastation Index</div>
-         </app-toolbar>
+          </app-toolbar>
 
         </app-header>
 
-        <div class="pages-container">
-          <survey-form id="surveyform" name="home"></survey-form>
-        </div>
+        <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
+          <login-element name="login"></login-element>
+          <data-form name="home"></data-form>
+        </iron-pages>
+        <!-- <div class="pages-container">
+        </div> -->
 
       </app-header-layout>
 
@@ -256,10 +237,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       observers: [],
-
-      attached: function () {
+      listeners: {
+        "login-success-event": "_handleLogin"
       },
-
+      attached: function () {
+        this.set('page', 'login')
+      },
+      _handleLogin: function (e) {
+        this.set('page', 'home')
+        console.log(e.detail.id);
+      },
       _equal: function (value1, value2) {
         return value1 === value2;
       },

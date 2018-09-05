@@ -135,7 +135,7 @@
     },
     "TypeMapping": {
         "dataSource": "db",
-        "public": false
+        "public": true
     },
     "GridMetaData": {
         "dataSource": "db",
@@ -191,7 +191,7 @@
         "dataSource": "db"
     },
     "UIComponent": {
-        "public": false,
+        "public": true,
         "dataSource": "db"
     },
     "UIElement": {
