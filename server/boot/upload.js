@@ -23,10 +23,9 @@ module.exports = function () {
         }
         searchData = JSON.parse(fdata);
         async.mapSeries(searchData, function (item, cb) {
-            item.id = item.GOID;
             ItemModel.findOrCreate({
                 "where": {
-                    "id": item.id
+                    "GOID": item.GOID
                 }
             }, item, context, function (err, dbrec) {
                 return cb(null, dbrec);
