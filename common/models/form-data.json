@@ -1,0 +1,230 @@
+{
+    "name": "FormData",
+    "plural": "FormData",
+    "base": "PersistedModel",
+    "idInjection": false,
+    "options": {
+        "validateUpsert": true
+    },
+    "properties": {
+        "GOID": {
+            "type": "String"
+        },
+        "OWNEDREN": {
+            "type": "String"
+        },
+        "BUILDING_N": {
+            "type": "String"
+        },
+        "GIS_ID": {
+            "type": "String"
+        },
+        "OWNER_NAM": {
+            "type": "String"
+        },
+        "ADDRESS": {
+            "type": "String"
+        },
+        "MOBILE1": {
+            "type": "String"
+        },
+        "MOBILE2": {
+            "type": "String"
+        },
+        "BUISTRUREP": {
+            "type": "String"
+        },
+        "COMWALREP": {
+            "type": "String"
+        },
+        "CARPWORK": {
+            "type": "String"
+        },
+        "ELECWORK": {
+            "type": "String"
+        },
+        "PLUMWORK": {
+            "type": "String"
+        },
+        "WELLREPIRE": {
+            "type": "String"
+        },
+        "NOFAN": {
+            "type": "Number"
+        },
+        "NOLIGHTS": {
+            "type": "Number"
+        },
+        "TVREQ": {
+            "type": "String"
+        },
+        "FRIDGE": {
+            "type": "String"
+        },
+        "WASH_MECH": {
+            "type": "String"
+        },
+        "MOTORPUMP": {
+            "type": "String"
+        },
+        "COMP_LAP": {
+            "type": "String"
+        },
+        "OTHERELEC": {
+            "type": "String"
+        },
+        "COT": {
+            "type": "Number"
+        },
+        "CHAIR": {
+            "type": "Number"
+        },
+        "NOTAB": {
+            "type": "Number"
+        },
+        "MATRESS": {
+            "type": "Number"
+        },
+        "SOFA_SET": {
+            "type": "String"
+        },
+        "OTHERFUR": {
+            "type": "String"
+        },
+        "STUD_CYCLE": {
+            "type": "String"
+        },
+        "GAS_STOVE": {
+            "type": "String"
+        },
+        "GAS_CYLIN": {
+            "type": "String"
+        },
+        "MIXIE": {
+            "type": "String"
+        },
+        "OTH_KITCUT": {
+            "type": "String"
+        },
+        "LAND_RECRD": {
+            "type": "String"
+        },
+        "AADHAR": {
+            "type": "String"
+        },
+        "PANCARD": {
+            "type": "String"
+        },
+        "RATIONCARD": {
+            "type": "String"
+        },
+        "VOTERID": {
+            "type": "String"
+        },
+        "DRIV_LICEN": {
+            "type": "String"
+        },
+        "EDU_CERTI": {
+            "type": "String"
+        },
+        "PASSPORT": {
+            "type": "String"
+        },
+        "BIRTH_CERT": {
+            "type": "String"
+        },
+        "DEATH_CERT": {
+            "type": "String"
+        },
+        "INSUR_CARD": {
+            "type": "String"
+        },
+        "OTHER_DOC": {
+            "type": "String"
+        },
+        "AGRI_LOST": {
+            "type": "String"
+        },
+        "AGRI_LOAN": {
+            "type": "String"
+        },
+        "FLOODLINMT": {
+            "type": "Number"
+        },
+        "PEOPLEMIS": {
+            "type": "Number"
+        },
+        "COW_MISS": {
+            "type": "String"
+        },
+        "GOAT_MISS": {
+            "type": "String"
+        },
+        "POULTRYLOS": {
+            "type": "String"
+        },
+        "DAMAGEASM": {
+            "type": "String"
+        },
+        "CLEANHRS": {
+            "type": "Number"
+        },
+        "PMOFLIV": {
+            "type": "String"
+        },
+        "MOSTDISLOS": {
+            "type": "String"
+        },
+        "CONT_PERSO": {
+            "type": "String"
+        },
+        "CONT_MOB": {
+            "type": "String"
+        },
+        "verifyRemarks" : {
+
+        }
+    },
+    "validations": [],
+    "relations": {
+      
+    },
+    "acls": [
+        {
+            "property": "*",
+            "accessType": "*",
+            "principalType": "ROLE",
+            "principalId": "$everyone",
+            "permission": "DENY"
+        },
+        {
+            "property": "find",
+            "accessType": "READ",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        },
+        {
+            "property": "update",
+            "accessType": "WRITE",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        },
+        {
+            "property": "create",
+            "accessType": "WRITE",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        },
+        {
+            "property": "findById",
+            "accessType": "READ",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        }
+    ],
+    "methods": {}
+}
