@@ -12,7 +12,7 @@
         background-color: white;
       }
 
-      oe-input {
+      paper-input {
         min-width: 300px;
         margin-left: 8px;
       }
@@ -89,21 +89,21 @@
       <form class="flex layout vertical" is="iron-form" id="evloginForm">
         <div class="box layout horizontal justified center">
           <iron-icon class="customIcons" icon="social:person" prefix></iron-icon>
-          <oe-input always-float-label label="Username" autocomplete="off" required error-message="{{usernameErrorMessage}}" value="{{username}}">
-          </oe-input>
+          <paper-input always-float-label label="Username" autocomplete="off" required error-message="{{usernameErrorMessage}}" value="{{username}}">
+          </paper-input>
         </div>
         <div class="box layout horizontal justified center">
           <iron-icon class="customIcons" icon="communication:vpn-key" prefix></iron-icon>
-          <oe-input always-float-label class="flex" label="Password" autocomplete="off" required error-message="{{passwordErrorMessage}}"
+          <paper-input always-float-label class="flex" label="Password" autocomplete="off" required error-message="{{passwordErrorMessage}}"
             type="password" value="{{password}}">
-          </oe-input>
+          </paper-input>
         </div>
         <div>[[errorMessage]]</div>
       </form>
       <paper-button class="login-btn" primary on-tap="doLogin">Login</paper-button>
     </div>
-    <oe-ajax id="login" method="POST" content-type="application/json" on-response="_handleLoginSuccess" on-error="_handleLoginError"></oe-ajax>
-    <oe-ajax id="session" method="GET" content-type="application/json" on-response="_handleSessionSuccess" on-error="_handleSessionError"></oe-ajax>
+    <iron-ajax id="login" method="POST" content-type="application/json" on-response="_handleLoginSuccess" on-error="_handleLoginError"></iron-ajax>
+    <iron-ajax id="session" method="GET" content-type="application/json" on-response="_handleSessionSuccess" on-error="_handleSessionError"></iron-ajax>
   </template>
   <script>
     Polymer({
@@ -154,8 +154,8 @@
           this.set('errorMessage', 'Invalid username or password');
         }
         else {
-          var msg = OEUtils.extractErrorMessage(event);
-          this.set('errorMessage', msg.message);
+          //var msg = OEUtils.extractErrorMessage(event);
+          //this.set('errorMessage', msg.message);
         }
       },
       _handleLoginSuccess: function (event) {
@@ -188,7 +188,7 @@
           username: this.username.toLowerCase(),
           password: this.password
         };
-        this.$.login.url = OEUtils.geturl("/api/BaseUsers/login");
+        this.$.login.url = "/api/BaseUsers/login";
         this.set('loaderVisible', true);
         this.$.spinner.active = true;
         this.$.login.body = JSON.stringify(body);
