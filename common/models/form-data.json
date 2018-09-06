@@ -1,7 +1,7 @@
 {
     "name": "FormData",
     "plural": "FormData",
-    "base": "BaseEntity",
+    "base": "PersistedModel",
     "idInjection": false,
     "options": {
         "validateUpsert": true
