@@ -4,7 +4,6 @@
 
         <style include="shared-styles iron-flex iron-flex-alignment">
             .search {
-                max-width: 300px;
                 margin: 16px auto;
             }
 
@@ -12,44 +11,130 @@
                 max-width: 200px;
             }
 
-            paper-input {
-                max-width: 300px;
+            #search-input{
+                width: 300px;
             }
 
+
+            .heading-2{
+                padding: 0px 32px;
+            }
+            .record-heading{
+                border-top: 1px solid rgba(0,0,0,0.2);
+                margin-bottom: 2px;
+            }
             .record {
                 @apply --layout-horizontal;
                 cursor: pointer;
+                padding: 0px 16px;
+                box-sizing: border-box;
+                min-height: 40px;
+                border-bottom: 1px solid rgba(0,0,0,0.2);
+            }
+            .record>* {
+                padding: 8px;
+            }
+            .owner_name_col{
+                width:20%;
+            }
+            .gis_id_col{
+                width:20%;
+            }
+            .address_col{
+                width:60%;
+                word-wrap: break-word;
+                word-break: keep-all;
             }
 
-            .record>* {
-                margin: 8px;
-            }
+
+
             .form {
                 margin-left : 16px;
             }
+            .form-header iron-icon{
+                cursor: pointer;
+            }
+            .form-header label{
+                font-size: 20px;
+                padding: 16px;
+            }
+            .form fieldset{
+                margin-bottom: 16px;
+            }
+
+            .layout-2-col > * {
+                width:calc(50% - 32px);
+                padding:0px 16px;
+            }
+
         </style>
 
         <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
             <div name="list">
-                <div class="search layout horizontal">
-                    <paper-input value={{searchstring}} placeholder="Search" on-change="dosearch"> </paper-input>
+                <div class="search layout horizontal center-center">
+                    <paper-input value={{searchstring}} id="search-input" label="Search by name,mobile no or GIS_ID" on-change="dosearch">
+                        <iron-icon icon="search" slot="prefix"></iron-icon>
+                    </paper-input>
                 </div>
                 <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
-                <template is="dom-repeat" items={{list}}>
-                    <div class="record" on-tap="_handleTap">
-                        <span>[[item.OWNER_NAM]]</span>
-                        <span>[[item.GIS_ID]]</span>
-                        <span>[[item.ADDRESS]]</span>
+                <div class="list-data" hidden=[[!list.length]]>
+                    <h2 class="heading-2">Matching records ([[list.length]])</h2>
+                    <div class="record record-heading">
+                            <span class="owner_name_col">Owner Name</span>
+                            <span class="gis_id_col">GIS Id</span>
+                            <span class="address_col">Address</span>
+                    </div>
+                    <template is="dom-repeat" items={{list}}>
+                        <paper-item class="record" on-tap="_handleTap">
+                            <span class="owner_name_col">[[item.OWNER_NAM]]</span>
+                            <span class="gis_id_col">[[item.GIS_ID]]</span>
+                            <span class="address_col">[[item.ADDRESS]]</span>
                         </paper-item>
-                </template>
-
+                    </template>    
+                </div>
+                
                 </div>
                 <div name="form" class="form">
                     <!-- icons:arrow-back -->
-                    <iron-icon id="back-arrow" on-tap="gotolist" icon="icons:arrow-back"></iron-icon>
-                    <paper-input label="Owner Name" value={{data.OWNER_NAM}}></paper-input>
-                    <paper-input label="GOD" value={{data.GOD}}></paper-input>
-                    <paper-input label="Address" value={{data.ADDRESS}}></paper-input>
+                    <div class="form-header layout horizontal center">
+                            <iron-icon id="back-arrow" on-tap="gotolist" icon="icons:arrow-back"></iron-icon>
+                            <label>Form Data : [[data.id]]</label>
+                    </div>
+                    <form>
+                        <fieldset>
+                            <legend>Personal Information</legend>
+                            <div class="layout horizontal layout-2-col wrap">
+                                <paper-input label="Owner Name" value={{data.OWNER_NAM}}></paper-input>
+                                <paper-input label="Building Number" value={{data.BUILDING_N}}></paper-input>
+                                <paper-input label="Address" value={{data.ADDRESS}}></paper-input>
+                                <paper-input label="Ownedres" value={{data.OWNEDREN}}></paper-input>
+                                <paper-input pattern="[0-9]+" label="Mobile no 1" value={{data.MOBILE1}}></paper-input>
+                                <paper-input pattern="[0-9]+" label="Mobile no 2" value={{data.MOBILE2}}></paper-input>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                                <legend>Repair Status</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="BUISTRUREP" value={{data.BUISTRUREP}}></paper-input>
+                                    <paper-input label="Wall repair" value={{data.COMWALREP}}></paper-input>
+                                    <paper-input label="Carpet" value={{data.CARPWORK}}></paper-input>
+                                    <paper-input label="Electricity" value={{data.ELECWORK}}></paper-input>
+                                    <paper-input label="Plumming word" value={{data.PLUMWORK}}></paper-input>
+                                    <paper-input label="Well repair" value={{data.WELLREPIRE}}></paper-input>
+                                </div>
+                        </fieldset>
+                        <fieldset>
+                                <legend>Equipments Status</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input type="number" label="No of Fans" value={{data.NOFAN}}></paper-input>
+                                    <paper-input type="number" label="No of lights" value={{data.NOLIGHTS}}></paper-input>
+                                    <paper-input type="number" label="No of Cot" value={{data.COT}}></paper-input>
+                                    <paper-input type="number" label="No of chair" value={{data.CHAIR}}></paper-input>
+                                    <paper-input type="number" label="No of tables" value={{data.NOTAB}}></paper-input>
+                                    <paper-input type="number" label="No of matress" value={{data.MATRESS}}></paper-input>
+                                </div>
+                        </fieldset>
+                    </form>
                 </div>
         </iron-pages>
 
