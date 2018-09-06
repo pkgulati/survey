@@ -7,7 +7,8 @@
       }
 
       .login-container {
-        margin: 0px 15px 0px 15px;
+        max-width : 400px;
+        margin: 0px auto;
         padding: 15px;
         background-color: white;
       }
@@ -54,6 +55,9 @@
         left: 40%;
       }
 
+      .customIcons {
+        margin-right : 8px;
+      }
       iron-image {
         width: 140px;
         height: 40px;
@@ -88,14 +92,14 @@
       <!-- <iron-image src="/images/evapp-logo.png"></iron-image> -->
       <form class="flex layout vertical" is="iron-form" id="evloginForm">
         <div class="box layout horizontal justified center">
-          <iron-icon class="customIcons" icon="social:person" prefix></iron-icon>
           <paper-input always-float-label label="Username" autocomplete="off" required error-message="{{usernameErrorMessage}}" value="{{username}}">
-          </paper-input>
+              <iron-icon slot="prefix" class="customIcons" icon="social:person" prefix></iron-icon>
+            </paper-input>
         </div>
         <div class="box layout horizontal justified center">
-          <iron-icon class="customIcons" icon="communication:vpn-key" prefix></iron-icon>
           <paper-input always-float-label class="flex" label="Password" autocomplete="off" required error-message="{{passwordErrorMessage}}"
             type="password" value="{{password}}">
+            <iron-icon   slot="prefix" slot="prefix" class="customIcons" icon="communication:vpn-key" prefix></iron-icon>
           </paper-input>
         </div>
         <div>[[errorMessage]]</div>
