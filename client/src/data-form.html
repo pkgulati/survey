@@ -4,9 +4,8 @@
 
         <style include="shared-styles iron-flex iron-flex-alignment">
             .search {
-                max-width: 500px;
+                max-width: 300px;
                 margin: 16px auto;
-                display: inline;
             }
 
             .search>paper-button {
@@ -16,16 +15,24 @@
             paper-input {
                 max-width: 300px;
             }
+
+            .record {
+                @apply --layout-horizontal;
+            }
+            .record > * {
+                margin : 8px;
+            }
         </style>
 
         <div class="search layout horizontal">
-            <paper-input flex value={{searchstring}} placeholder="Search" on-change="dosearch"> </paper-input>
+            <paper-input  value={{searchstring}} placeholder="Search" on-change="dosearch"> </paper-input>
         </div>
         <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
         <template is="dom-repeat" items={{list}}>
-            <paper-item>
-                    <div>[[item.GOID]]</div>
-                    <div>[[item.OWNER_NAM]]</div>
+            <div class="record">
+                  <span>[[item.OWNER_NAM]]</span>
+                  <span>[[item.GIS_ID]]</span>
+                  <span>[[item.ADDRESS]]</span>
             </paper-item>
         </template>
     </template>
@@ -39,21 +46,38 @@
                 searchstring: {
                     type: String
                 },
-                list : {
-                    type : Array,
-                    value : function() {
+                list: {
+                    type: Array,
+                    value: function () {
                         return [];
                     }
-                 }
+                }
             },
             dosearch: function () {
-                console.log('search now ', this.searchstring);
+                if (this.searchstring == "") {
+                    this.set('list', []);
+                    return;
+                }
+                if (this.searchstring.length < 3)  {
+                    //raise toast
+                    return;
+                }
+                var upperString = this.searchstring.toUpperCase();
                 var auth_token = localStorage.getItem('auth_token');
                 var filter = {};
+                var conditions = [];
+                if (this.searchstring.length >= 10) {
+                    conditions.push({ MOBILE1: this.searchstring });
+                    conditions.push({ MOBILE2: this.searchstring });
+                }
+                conditions.push({ OWNER_NAM: {like : upperString }});
+                conditions.push({ OWNER_NAM: {like : this.searchstring }});
+                conditions.push({ GIS_ID: {inq :[upperString, this.searchstring]}});
                 filter = {
                     where: {
-                        MOBILE1 : this.searchstring 
-                    }
+                        or: conditions
+                    },
+                    limit: 20
                 };
                 this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" + JSON.stringify(filter);
                 this.set('loaderVisible', true);
@@ -61,10 +85,11 @@
                 //this.$.fetch.body = JSON.stringify(body);
                 this.$.fetch.generateRequest();
             },
-            _handleFetchSuccess : function(e) {
+            _handleFetchSuccess: function (e) {
                 this.set('list', e.detail.response);
+                console.log('number of forms found ', this.list.length);
             },
-            _handleFetchError:function(e) {
+            _handleFetchError: function (e) {
 
             }
 
