@@ -18,23 +18,42 @@
 
             .record {
                 @apply --layout-horizontal;
+                cursor: pointer;
             }
-            .record > * {
-                margin : 8px;
+
+            .record>* {
+                margin: 8px;
+            }
+            .form {
+                margin-left : 16px;
             }
         </style>
 
-        <div class="search layout horizontal">
-            <paper-input  value={{searchstring}} placeholder="Search" on-change="dosearch"> </paper-input>
-        </div>
-        <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
-        <template is="dom-repeat" items={{list}}>
-            <div class="record">
-                  <span>[[item.OWNER_NAM]]</span>
-                  <span>[[item.GIS_ID]]</span>
-                  <span>[[item.ADDRESS]]</span>
-            </paper-item>
-        </template>
+        <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
+            <div name="list">
+                <div class="search layout horizontal">
+                    <paper-input value={{searchstring}} placeholder="Search" on-change="dosearch"> </paper-input>
+                </div>
+                <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
+                <template is="dom-repeat" items={{list}}>
+                    <div class="record" on-tap="_handleTap">
+                        <span>[[item.OWNER_NAM]]</span>
+                        <span>[[item.GIS_ID]]</span>
+                        <span>[[item.ADDRESS]]</span>
+                        </paper-item>
+                </template>
+
+                </div>
+                <div name="form" class="form">
+                    <!-- icons:arrow-back -->
+                    <iron-icon id="back-arrow" on-tap="gotolist" icon="icons:arrow-back"></iron-icon>
+                    <paper-input label="Owner Name" value={{data.OWNER_NAM}}></paper-input>
+                    <paper-input label="GOD" value={{data.GOD}}></paper-input>
+                    <paper-input label="Address" value={{data.ADDRESS}}></paper-input>
+                </div>
+        </iron-pages>
+
+
     </template>
 
     <script>
@@ -53,12 +72,18 @@
                     }
                 }
             },
+            attached: function () {
+                this.set('page', 'list');
+            },
+            gotolist : function() {
+                this.set('page', 'list');        
+            },
             dosearch: function () {
                 if (this.searchstring == "") {
                     this.set('list', []);
                     return;
                 }
-                if (this.searchstring.length < 3)  {
+                if (this.searchstring.length < 3) {
                     //raise toast
                     return;
                 }
@@ -70,9 +95,9 @@
                     conditions.push({ MOBILE1: this.searchstring });
                     conditions.push({ MOBILE2: this.searchstring });
                 }
-                conditions.push({ OWNER_NAM: {like : upperString }});
-                conditions.push({ OWNER_NAM: {like : this.searchstring }});
-                conditions.push({ GIS_ID: {inq :[upperString, this.searchstring]}});
+                conditions.push({ OWNER_NAM: { like: upperString } });
+                conditions.push({ OWNER_NAM: { like: this.searchstring } });
+                conditions.push({ GIS_ID: { inq: [upperString, this.searchstring] } });
                 filter = {
                     where: {
                         or: conditions
@@ -91,8 +116,12 @@
             },
             _handleFetchError: function (e) {
 
+            },
+            _handleTap: function (e) {
+                console.log('model ', e.model.item);
+                this.set('data', e.model.item);
+                this.set('page', 'form');
             }
-
         });
     </script>
 </dom-module>
