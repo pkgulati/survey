@@ -23,8 +23,10 @@
         </div>
         <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
         <template is="dom-repeat" items={{list}}>
-            <div>[[item.GOID]]</div>
-            <div>[[item.NAME]]</div>
+            <paper-item>
+                    <div>[[item.GOID]]</div>
+                    <div>[[item.OWNER_NAM]]</div>
+            </paper-item>
         </template>
     </template>
 
