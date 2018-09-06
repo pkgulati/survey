@@ -16,89 +16,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
 
     <style>
-      :host {
-        --app-primary-color: #404040;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-      }
-
-      app-drawer {
-        --app-drawer-content-container: {
-          background-color: var(--app-primary-color);
-          overflow-x: hidden;
-        }
-        ;
-      }
-
-      app-drawer app-header {
-        background-color: var(--app-primary-color);
-      }
-
-      .nav-menu {
-        background-color: var(--app-primary-color);
-        color: #fff;
-      }
-
-      a {
-        text-decoration: none;
-        color: inherit;
-        font-size: inherit;
-      }
-
-      .nav-menu>paper-item {
-        display: block;
-        padding: 12px 16px;
-        font-size: 16px;
-        font-weight: 300;
-      }
-
-      .nav-menu>a {
-        display: block;
-        padding: 12px 16px;
-        font-size: 16px;
-        font-weight: 300;
-      }
-
-      .nav-menu>a.iron-selected {
-        background-color: #888;
-      }
-
-      .main-header {
-        border-bottom: 1px solid #ddd;
-        background-color: #fff;
-        color: #444;
-      }
-
-      .title-toolbar {
-        box-sizing: border-box;
-      }
-
-      .nav-title-toolbar {
-        color: #fff;
-        width: 100vw;
-      }
-
-      .main-title-toolbar {
-        width: 100%;
-      }
-
+      
       .title {
         font-size: 20px;
         font-weight: 200;
         padding-bottom: 0px;
-      }
-
-      survey-form {
-        min-height: 100vh;
-        margin: 0 auto;
-        width: 96%;
-        max-width: 720px;
-        margin-bottom: 48px;
-      }
-
-      article-headline {
-        @apply --shadow-transition;
-        @apply --shadow-elevation-2dp;
-        cursor: pointer;
       }
 
       .pages-container {
@@ -106,32 +28,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: flex;
       }
 
-      article-detail {
-        max-width: 736px;
-        margin: 64px auto;
-        background-color: #fff;
-        @apply --shadow-elevation-2dp;
-      }
-
       [hidden] {
         display: none;
       }
 
+      .drawer-title {
+        
+      }
       @media (max-width: 580px) {
-
-        /* make title smaller to fit on screen */
-        .title {
-          font-size: 20px;
-          padding-bottom: 0px;
-        }
-
-        survey-form {
-          min-height: 100vh;
-          margin: 0;
-          width: 96%;
-          margin-bottom: 48px;
-          max-width: none;
-        }
 
       }
 
@@ -152,59 +56,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- setup routes -->
     <app-location route="{{route}}"></app-location>
 
-    <app-drawer-layout drawer-width="288px" responsive-width="1280px" narrow="{{narrow}}">
-
-      <!-- nav panel -->
-      <app-drawer id="drawer" slot="drawer">
-        <app-header-layout has-scrolling-region>
-
-          <app-header fixed slot="header">
-
-            <!-- top toolbar -->
-            <app-toolbar></app-toolbar>
-
-            <app-toolbar class="title-toolbar nav-title-toolbar">
-              <div class="nav-title">
-                Flood Devastation Index
-              </div>
-            </app-toolbar>
-
-          </app-header>
-
-
-          <!-- nav menu -->
-          <iron-selector class="nav-menu" attr-for-selected="name" on-iron-activate="_drawerSelected">
-            <!-- <a name="home" href="/">Home</a>
-            <a name="logout" href="/logout">Logout</a> -->
-            <paper-item on-tap="_resetForm">Reset Form</paper-item>
-          </iron-selector>
-
-        </app-header-layout>
-      </app-drawer>
-
-      <!-- main panel -->
-      <app-header-layout>
-
-        <app-header fixed effects="waterfall" class="main-header" slot="header">
-          <!-- top toolbar -->
-          <app-toolbar>
-            <!-- menu button -->
-            <paper-icon-button drawer-toggle icon="app:menu"></paper-icon-button>
-            <div class="title">Flood Devastation Index</div>
-          </app-toolbar>
-
-        </app-header>
-
-        <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
-          <login-element name="login"></login-element>
-          <data-form name="home"></data-form>
-        </iron-pages>
-        <!-- <div class="pages-container">
-        </div> -->
-
-      </app-header-layout>
-
-    </app-drawer-layout>
+ 
+      <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
+        <login-element name="login"></login-element>
+        <data-form name="home"></data-form>
+      </iron-pages>
 
   </template>
 
@@ -238,7 +94,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       observers: [],
       listeners: {
-        "login-success-event": "_handleLogin"
+        "login-success-event": "_handleLogin",
+        "app-open-drawer": "_openDrawer"
+      },
+      _openDrawer: function () {
+        //this.$.drawer.open();
       },
       attached: function () {
         var auth_token = localStorage.getItem('auth_token');

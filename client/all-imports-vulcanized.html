@@ -14875,45 +14875,54 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 --><!--
-Material design: [Dropdown buttons](https://www.google.com/design/spec/components/buttons.html#buttons-dropdown-buttons)
+Material design: [Snackbars & toasts](https://www.google.com/design/spec/components/snackbars-toasts.html)
 
-`paper-menu-button` allows one to compose a designated "trigger" element with
-another element that represents "content", to create a dropdown menu that
-displays the "content" when the "trigger" is clicked.
+`paper-toast` provides a subtle notification toast. Only one `paper-toast` will
+be visible on screen.
 
-The child element assigned to the `dropdown-trigger` slot will be used as the
-"trigger" element. The child element assigned to the `dropdown-content` slot will be
-used as the "content" element.
-
-The `paper-menu-button` is sensitive to its content's `iron-select` events. If
-the "content" element triggers an `iron-select` event, the `paper-menu-button`
-will close automatically.
+Use `opened` to show the toast:
 
 Example:
 
-    <paper-menu-button>
-      <paper-icon-button icon="menu" slot="dropdown-trigger"></paper-icon-button>
-      <paper-listbox slot="dropdown-content">
-        <paper-item>Share</paper-item>
-        <paper-item>Settings</paper-item>
-        <paper-item>Help</paper-item>
-      </paper-listbox>
-    </paper-menu-button>
+    <paper-toast text="Hello world!" opened></paper-toast>
+
+Also `open()` or `show()` can be used to show the toast:
+
+Example:
+
+    <paper-button on-click="openToast">Open Toast</paper-button>
+    <paper-toast id="toast" text="Hello world!"></paper-toast>
+
+    ...
+
+    openToast: function() {
+      this.$.toast.open();
+    }
+
+Set `duration` to 0, a negative number or Infinity to persist the toast on screen:
+
+Example:
+
+    <paper-toast text="Terms and conditions" opened duration="0">
+      <a href="#">Show more</a>
+    </paper-toast>
+
 
 ### Styling
-
-The following custom properties and mixins are also available for styling:
+The following custom properties and mixins are available for styling:
 
 Custom property | Description | Default
 ----------------|-------------|----------
-`--paper-menu-button-dropdown-background` | Background color of the paper-menu-button dropdown | `--primary-background-color`
-`--paper-menu-button` | Mixin applied to the paper-menu-button | `{}`
-`--paper-menu-button-disabled` | Mixin applied to the paper-menu-button when disabled | `{}`
-`--paper-menu-button-dropdown` | Mixin applied to the paper-menu-button dropdown | `{}`
-`--paper-menu-button-content` | Mixin applied to the paper-menu-button content | `{}`
+`--paper-toast-background-color` | The paper-toast background-color | `#323232`
+`--paper-toast-color` | The paper-toast color | `#f1f1f1`
 
-@hero hero.svg
+This element applies the mixin `--paper-font-common-base` but does not import `paper-styles/typography.html`.
+In order to apply the `Roboto` font to this element, make sure you've imported `paper-styles/typography.html`.
+
+@group Paper Elements
+@element paper-toast
 @demo demo/index.html
+@hero hero.svg
 -->
 
 <!--
@@ -14924,33 +14933,118 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
---><!--TODO remove this import -->
-<!--
-`<iron-dropdown>` is a generalized element that is useful when you have
-hidden content (`dropdown-content`) that is revealed due to some change in
-state that should cause it to do so.
+--><!--
+`iron-a11y-announcer` is a singleton element that is intended to add a11y
+to features that require on-demand announcement from screen readers. In
+order to make use of the announcer, it is best to request its availability
+in the announcing element.
 
-Note that this is a low-level element intended to be used as part of other
-composite elements that cause dropdowns to be revealed.
+Example:
 
-Examples of elements that might be implemented using an `iron-dropdown`
-include comboboxes, menubuttons, selects. The list goes on.
+    Polymer({
 
-The `<iron-dropdown>` element exposes attributes that allow the position
-of the `dropdown-content` relative to the `dropdown-trigger` to be
-configured.
+      is: 'x-chatty',
 
-    <iron-dropdown horizontal-align="right" vertical-align="top">
-      <div slot="dropdown-content">Hello!</div>
-    </iron-dropdown>
+      attached: function() {
+        // This will create the singleton element if it has not
+        // been created yet:
+        Polymer.IronA11yAnnouncer.requestAvailability();
+      }
+    });
 
-In the above example, the `<div>` assigned to the `dropdown-content` slot will be
-hidden until the dropdown element has `opened` set to true, or when the `open`
-method is called on the element.
+After the `iron-a11y-announcer` has been made available, elements can
+make announces by firing bubbling `iron-announce` events.
 
+Example:
+
+    this.fire('iron-announce', {
+      text: 'This is an announcement!'
+    }, { bubbles: true });
+
+Note: announcements are only audible if you have a screen reader enabled.
+
+@group Iron Elements
 @demo demo/index.html
 -->
 
+<dom-module id="iron-a11y-announcer" assetpath="bower_components/iron-a11y-announcer/">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        position: fixed;
+        clip: rect(0px,0px,0px,0px);
+      }
+    </style>
+    <div aria-live$="[[mode]]">[[_text]]</div>
+  </template>
+
+  <script>
+
+    (function() {
+      'use strict';
+
+      Polymer.IronA11yAnnouncer = Polymer({
+        is: 'iron-a11y-announcer',
+
+        properties: {
+
+          /**
+           * The value of mode is used to set the `aria-live` attribute
+           * for the element that will be announced. Valid values are: `off`,
+           * `polite` and `assertive`.
+           */
+          mode: {
+            type: String,
+            value: 'polite'
+          },
+
+          _text: {
+            type: String,
+            value: ''
+          }
+        },
+
+        created: function() {
+          if (!Polymer.IronA11yAnnouncer.instance) {
+            Polymer.IronA11yAnnouncer.instance = this;
+          }
+
+          document.body.addEventListener('iron-announce', this._onIronAnnounce.bind(this));
+        },
+
+        /**
+         * Cause a text string to be announced by screen readers.
+         *
+         * @param {string} text The text that should be announced.
+         */
+        announce: function(text) {
+          this._text = '';
+          this.async(function() {
+            this._text = text;
+          }, 100);
+        },
+
+        _onIronAnnounce: function(event) {
+          if (event.detail && event.detail.text) {
+            this.announce(event.detail.text);
+          }
+        }
+      });
+
+      Polymer.IronA11yAnnouncer.instance = null;
+
+      Polymer.IronA11yAnnouncer.requestAvailability = function() {
+        if (!Polymer.IronA11yAnnouncer.instance) {
+          Polymer.IronA11yAnnouncer.instance = document.createElement('iron-a11y-announcer');
+        }
+
+        document.body.appendChild(Polymer.IronA11yAnnouncer.instance);
+      };
+    })();
+
+  </script>
+</dom-module>
 <!--
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
@@ -17569,7 +17663,326 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
    * (contains `canceled`, whether the overlay was canceled).
    */
   })();
-</script><!--
+</script><dom-module id="paper-toast" assetpath="bower_components/paper-toast/">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: fixed;
+        background-color: var(--paper-toast-background-color, #323232);
+        color: var(--paper-toast-color, #f1f1f1);
+        min-height: 48px;
+        min-width: 288px;
+        padding: 16px 24px;
+        box-sizing: border-box;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        border-radius: 2px;
+        margin: 12px;
+        font-size: 14px;
+        cursor: default;
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+        transition: transform 0.3s, opacity 0.3s;
+        opacity: 0;
+        -webkit-transform: translateY(100px);
+        transform: translateY(100px);
+        @apply --paper-font-common-base;
+      }
+
+      :host(.capsule) {
+        border-radius: 24px;
+      }
+
+      :host(.fit-bottom) {
+        width: 100%;
+        min-width: 0;
+        border-radius: 0;
+        margin: 0;
+      }
+
+      :host(.paper-toast-open) {
+        opacity: 1;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+      }
+    </style>
+
+    <span id="label">{{text}}</span>
+    <slot></slot>
+  </template>
+
+  <script>
+    (function() {
+    'use strict';
+
+    // Keeps track of the toast currently opened.
+    var currentToast = null;
+
+    Polymer({
+      is: 'paper-toast',
+
+      behaviors: [Polymer.IronOverlayBehavior],
+
+      properties: {
+        /**
+         * The element to fit `this` into.
+         * Overridden from `Polymer.IronFitBehavior`.
+         */
+        fitInto: {type: Object, value: window, observer: '_onFitIntoChanged'},
+
+        /**
+         * The orientation against which to align the dropdown content
+         * horizontally relative to `positionTarget`.
+         * Overridden from `Polymer.IronFitBehavior`.
+         */
+        horizontalAlign: {type: String, value: 'left'},
+
+        /**
+         * The orientation against which to align the dropdown content
+         * vertically relative to `positionTarget`.
+         * Overridden from `Polymer.IronFitBehavior`.
+         */
+        verticalAlign: {type: String, value: 'bottom'},
+
+        /**
+         * The duration in milliseconds to show the toast.
+         * Set to `0`, a negative number, or `Infinity`, to disable the
+         * toast auto-closing.
+         */
+        duration: {type: Number, value: 3000},
+
+        /**
+         * The text to display in the toast.
+         */
+        text: {type: String, value: ''},
+
+        /**
+         * Overridden from `IronOverlayBehavior`.
+         * Set to false to enable closing of the toast by clicking outside it.
+         */
+        noCancelOnOutsideClick: {type: Boolean, value: true},
+
+        /**
+         * Overridden from `IronOverlayBehavior`.
+         * Set to true to disable auto-focusing the toast or child nodes with
+         * the `autofocus` attribute` when the overlay is opened.
+         */
+        noAutoFocus: {type: Boolean, value: true}
+      },
+
+      listeners: {'transitionend': '__onTransitionEnd'},
+
+      /**
+       * Read-only. Deprecated. Use `opened` from `IronOverlayBehavior`.
+       * @property visible
+       * @deprecated
+       */
+      get visible() {
+        Polymer.Base._warn('`visible` is deprecated, use `opened` instead');
+        return this.opened;
+      },
+
+      /**
+       * Read-only. Can auto-close if duration is a positive finite number.
+       * @property _canAutoClose
+       */
+      get _canAutoClose() {
+        return this.duration > 0 && this.duration !== Infinity;
+      },
+
+      created: function() {
+        this._autoClose = null;
+        Polymer.IronA11yAnnouncer.requestAvailability();
+      },
+
+      /**
+       * Show the toast. Without arguments, this is the same as `open()` from
+       * `IronOverlayBehavior`.
+       * @param {(Object|string)=} properties Properties to be set before opening the toast.
+       * e.g. `toast.show('hello')` or `toast.show({text: 'hello', duration: 3000})`
+       */
+      show: function(properties) {
+        if (typeof properties == 'string') {
+          properties = {text: properties};
+        }
+        for (var property in properties) {
+          if (property.indexOf('_') === 0) {
+            Polymer.Base._warn(
+                'The property "' + property + '" is private and was not set.');
+          } else if (property in this) {
+            this[property] = properties[property];
+          } else {
+            Polymer.Base._warn('The property "' + property + '" is not valid.');
+          }
+        }
+        this.open();
+      },
+
+      /**
+       * Hide the toast. Same as `close()` from `IronOverlayBehavior`.
+       */
+      hide: function() {
+        this.close();
+      },
+
+      /**
+       * Called on transitions of the toast, indicating a finished animation
+       * @private
+       */
+      __onTransitionEnd: function(e) {
+        // there are different transitions that are happening when opening and
+        // closing the toast. The last one so far is for `opacity`.
+        // This marks the end of the transition, so we check for this to determine
+        // if this is the correct event.
+        if (e && e.target === this && e.propertyName === 'opacity') {
+          if (this.opened) {
+            this._finishRenderOpened();
+          } else {
+            this._finishRenderClosed();
+          }
+        }
+      },
+
+      /**
+       * Overridden from `IronOverlayBehavior`.
+       * Called when the value of `opened` changes.
+       */
+      _openedChanged: function() {
+        if (this._autoClose !== null) {
+          this.cancelAsync(this._autoClose);
+          this._autoClose = null;
+        }
+        if (this.opened) {
+          if (currentToast && currentToast !== this) {
+            currentToast.close();
+          }
+          currentToast = this;
+          this.fire('iron-announce', {text: this.text});
+          if (this._canAutoClose) {
+            this._autoClose = this.async(this.close, this.duration);
+          }
+        } else if (currentToast === this) {
+          currentToast = null;
+        }
+        Polymer.IronOverlayBehaviorImpl._openedChanged.apply(this, arguments);
+      },
+
+      /**
+       * Overridden from `IronOverlayBehavior`.
+       */
+      _renderOpened: function() {
+        this.classList.add('paper-toast-open');
+      },
+
+      /**
+       * Overridden from `IronOverlayBehavior`.
+       */
+      _renderClosed: function() {
+        this.classList.remove('paper-toast-open');
+      },
+
+      /**
+       * @private
+       */
+      _onFitIntoChanged: function(fitInto) {
+        this.positionTarget = fitInto;
+      }
+
+      /**
+       * Fired when `paper-toast` is opened.
+       *
+       * @event 'iron-announce'
+       * @param {{text: string}} detail Contains text that will be announced.
+       */
+    });
+    })();
+  </script>
+</dom-module>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><!--
+Material design: [Dropdown buttons](https://www.google.com/design/spec/components/buttons.html#buttons-dropdown-buttons)
+
+`paper-menu-button` allows one to compose a designated "trigger" element with
+another element that represents "content", to create a dropdown menu that
+displays the "content" when the "trigger" is clicked.
+
+The child element assigned to the `dropdown-trigger` slot will be used as the
+"trigger" element. The child element assigned to the `dropdown-content` slot will be
+used as the "content" element.
+
+The `paper-menu-button` is sensitive to its content's `iron-select` events. If
+the "content" element triggers an `iron-select` event, the `paper-menu-button`
+will close automatically.
+
+Example:
+
+    <paper-menu-button>
+      <paper-icon-button icon="menu" slot="dropdown-trigger"></paper-icon-button>
+      <paper-listbox slot="dropdown-content">
+        <paper-item>Share</paper-item>
+        <paper-item>Settings</paper-item>
+        <paper-item>Help</paper-item>
+      </paper-listbox>
+    </paper-menu-button>
+
+### Styling
+
+The following custom properties and mixins are also available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-menu-button-dropdown-background` | Background color of the paper-menu-button dropdown | `--primary-background-color`
+`--paper-menu-button` | Mixin applied to the paper-menu-button | `{}`
+`--paper-menu-button-disabled` | Mixin applied to the paper-menu-button when disabled | `{}`
+`--paper-menu-button-dropdown` | Mixin applied to the paper-menu-button dropdown | `{}`
+`--paper-menu-button-content` | Mixin applied to the paper-menu-button content | `{}`
+
+@hero hero.svg
+@demo demo/index.html
+-->
+
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><!--TODO remove this import -->
+<!--
+`<iron-dropdown>` is a generalized element that is useful when you have
+hidden content (`dropdown-content`) that is revealed due to some change in
+state that should cause it to do so.
+
+Note that this is a low-level element intended to be used as part of other
+composite elements that cause dropdowns to be revealed.
+
+Examples of elements that might be implemented using an `iron-dropdown`
+include comboboxes, menubuttons, selects. The list goes on.
+
+The `<iron-dropdown>` element exposes attributes that allow the position
+of the `dropdown-content` relative to the `dropdown-trigger` to be
+configured.
+
+    <iron-dropdown horizontal-align="right" vertical-align="top">
+      <div slot="dropdown-content">Hello!</div>
+    </iron-dropdown>
+
+In the above example, the `<div>` assigned to the `dropdown-content` slot will be
+hidden until the dropdown element has `opened` set to true, or when the `open`
+method is called on the element.
+
+@demo demo/index.html
+-->
+
+<!--
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -20273,126 +20686,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 @demo demo/index.html
 -->
 
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
---><!--
-`iron-a11y-announcer` is a singleton element that is intended to add a11y
-to features that require on-demand announcement from screen readers. In
-order to make use of the announcer, it is best to request its availability
-in the announcing element.
-
-Example:
-
-    Polymer({
-
-      is: 'x-chatty',
-
-      attached: function() {
-        // This will create the singleton element if it has not
-        // been created yet:
-        Polymer.IronA11yAnnouncer.requestAvailability();
-      }
-    });
-
-After the `iron-a11y-announcer` has been made available, elements can
-make announces by firing bubbling `iron-announce` events.
-
-Example:
-
-    this.fire('iron-announce', {
-      text: 'This is an announcement!'
-    }, { bubbles: true });
-
-Note: announcements are only audible if you have a screen reader enabled.
-
-@group Iron Elements
-@demo demo/index.html
--->
-
-<dom-module id="iron-a11y-announcer" assetpath="bower_components/iron-a11y-announcer/">
-  <template>
-    <style>
-      :host {
-        display: inline-block;
-        position: fixed;
-        clip: rect(0px,0px,0px,0px);
-      }
-    </style>
-    <div aria-live$="[[mode]]">[[_text]]</div>
-  </template>
-
-  <script>
-
-    (function() {
-      'use strict';
-
-      Polymer.IronA11yAnnouncer = Polymer({
-        is: 'iron-a11y-announcer',
-
-        properties: {
-
-          /**
-           * The value of mode is used to set the `aria-live` attribute
-           * for the element that will be announced. Valid values are: `off`,
-           * `polite` and `assertive`.
-           */
-          mode: {
-            type: String,
-            value: 'polite'
-          },
-
-          _text: {
-            type: String,
-            value: ''
-          }
-        },
-
-        created: function() {
-          if (!Polymer.IronA11yAnnouncer.instance) {
-            Polymer.IronA11yAnnouncer.instance = this;
-          }
-
-          document.body.addEventListener('iron-announce', this._onIronAnnounce.bind(this));
-        },
-
-        /**
-         * Cause a text string to be announced by screen readers.
-         *
-         * @param {string} text The text that should be announced.
-         */
-        announce: function(text) {
-          this._text = '';
-          this.async(function() {
-            this._text = text;
-          }, 100);
-        },
-
-        _onIronAnnounce: function(event) {
-          if (event.detail && event.detail.text) {
-            this.announce(event.detail.text);
-          }
-        }
-      });
-
-      Polymer.IronA11yAnnouncer.instance = null;
-
-      Polymer.IronA11yAnnouncer.requestAvailability = function() {
-        if (!Polymer.IronA11yAnnouncer.instance) {
-          Polymer.IronA11yAnnouncer.instance = document.createElement('iron-a11y-announcer');
-        }
-
-        document.body.appendChild(Polymer.IronA11yAnnouncer.instance);
-      };
-    })();
-
-  </script>
-</dom-module>
 <dom-module id="iron-input" assetpath="bower_components/iron-input/">
   <template>
     <style>
@@ -29742,6 +30035,22 @@ Example:
     <template>
 
         <style include="shared-styles iron-flex iron-flex-alignment">
+            app-header {
+                background-color: var(--app-primary-color);
+            }
+
+            .nav-menu {
+                background-color: var(--app-primary-color);
+                color: #fff;
+            }
+
+            .main-header {
+                border-bottom: 1px solid #ddd;
+                background-color: #fff;
+                color: #444;
+            }
+
+
             .search {
                 margin: 16px auto;
             }
@@ -29750,37 +30059,43 @@ Example:
                 max-width: 200px;
             }
 
-            #search-input{
+            #search-input {
                 width: 300px;
             }
 
 
-            .heading-2{
+            .heading-2 {
                 padding: 0px 32px;
             }
-            .record-heading{
-                border-top: 1px solid rgba(0,0,0,0.2);
+
+            .record-heading {
+                border-top: 1px solid rgba(0, 0, 0, 0.2);
                 margin-bottom: 2px;
             }
+
             .record {
                 @apply --layout-horizontal;
                 cursor: pointer;
                 padding: 0px 16px;
                 box-sizing: border-box;
                 min-height: 40px;
-                border-bottom: 1px solid rgba(0,0,0,0.2);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
             }
+
             .record>* {
                 padding: 8px;
             }
-            .owner_name_col{
-                width:20%;
+
+            .owner_name_col {
+                width: 20%;
             }
-            .gis_id_col{
-                width:20%;
+
+            .gis_id_col {
+                width: 20%;
             }
-            .address_col{
-                width:60%;
+
+            .address_col {
+                width: 60%;
                 word-wrap: break-word;
                 word-break: keep-all;
             }
@@ -29788,57 +30103,87 @@ Example:
 
 
             .form {
-                margin-left : 16px;
+                margin-left: 16px;
             }
-            .form-header iron-icon{
+
+            .form-header iron-icon {
                 cursor: pointer;
             }
-            .form-header label{
+
+            .form-header label {
                 font-size: 20px;
                 padding: 16px;
             }
-            .form fieldset{
+
+            .form fieldset {
                 margin-bottom: 16px;
             }
 
-            .layout-2-col > * {
-                width:calc(50% - 32px);
-                padding:0px 16px;
+            .layout-2-col>* {
+                width: calc(50% - 32px);
+                padding: 0px 16px;
             }
 
+            .savebtn {
+                height: 36px;
+                position: absolute;
+                right: 24px;
+                background-color: #ff9e2c;
+                ;
+                color: white;
+                --paper-button-raised-keyboard-focus: {
+                    background-color: var(--paper-pink-a200) !important;
+                    color: white !important;
+                }
+                ;
+            }
         </style>
 
-        <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
-            <div name="list">
-                <div class="search layout horizontal center-center">
-                    <paper-input value="{{searchstring}}" id="search-input" label="Search by name,mobile no or GIS_ID" on-change="dosearch">
-                        <iron-icon icon="search" slot="prefix"></iron-icon>
-                    </paper-input>
-                </div>
-                <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
-                <div class="list-data" hidden="[[!list.length]]">
-                    <h2 class="heading-2">Matching records ([[list.length]])</h2>
-                    <div class="record record-heading">
+        <!-- main panel -->
+        <app-header-layout>
+
+            <app-header fixed="" effects="waterfall" class="main-header" slot="header">
+                <!-- top toolbar -->
+                <iron-pages id="pages" selected="[[page]]" attr-for-selected="name">
+                    <app-toolbar name="list">
+                        <paper-icon-button on-tap="openDrawer" icon="app:menu"></paper-icon-button>
+                        <div class="title">Relief Forms Search</div>
+                    </app-toolbar>
+                    <app-toolbar name="form">
+                        <paper-icon-button on-tap="gotolist" icon="icons:arrow-back"></paper-icon-button>
+                        <div class="title">Relief Form GIS ([[data.GIS_ID]])</div>
+                        <paper-button on-tap="saveForm" class="savebtn" raised="">Save</paper-button>
+                    </app-toolbar>
+                </iron-pages>
+
+            </app-header>
+
+            <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
+                <div name="list">
+                    <div class="search layout horizontal center-center">
+                        <paper-input value="{{searchstring}}" id="search-input" label="Search by name,mobile no or GIS_ID" on-change="dosearch">
+                            <iron-icon icon="search" slot="prefix"></iron-icon>
+                        </paper-input>
+                    </div>
+                    <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
+                    <div class="list-data" hidden="[[!list.length]]">
+                        <h2 class="heading-2">Matching records ([[list.length]])</h2>
+                        <div class="record record-heading">
                             <span class="owner_name_col">Owner Name</span>
                             <span class="gis_id_col">GIS Id</span>
                             <span class="address_col">Address</span>
+                        </div>
+                        <template is="dom-repeat" items="{{list}}">
+                            <paper-item class="record" on-tap="_handleTap">
+                                <span class="owner_name_col">[[item.OWNER_NAM]]</span>
+                                <span class="gis_id_col">[[item.GIS_ID]]</span>
+                                <span class="address_col">[[item.ADDRESS]]</span>
+                            </paper-item>
+                        </template>
                     </div>
-                    <template is="dom-repeat" items="{{list}}">
-                        <paper-item class="record" on-tap="_handleTap">
-                            <span class="owner_name_col">[[item.OWNER_NAM]]</span>
-                            <span class="gis_id_col">[[item.GIS_ID]]</span>
-                            <span class="address_col">[[item.ADDRESS]]</span>
-                        </paper-item>
-                    </template>    
-                </div>
-                
+
                 </div>
                 <div name="form" class="form">
-                    <!-- icons:arrow-back -->
-                    <div class="form-header layout horizontal center">
-                            <iron-icon id="back-arrow" on-tap="gotolist" icon="icons:arrow-back"></iron-icon>
-                            <label>Form Data : [[data.id]]</label>
-                    </div>
                     <form>
                         <fieldset>
                             <legend>Personal Information</legend>
@@ -29852,30 +30197,38 @@ Example:
                             </div>
                         </fieldset>
                         <fieldset>
-                                <legend>Repair Status</legend>
-                                <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input label="BUISTRUREP" value="{{data.BUISTRUREP}}"></paper-input>
-                                    <paper-input label="Wall repair" value="{{data.COMWALREP}}"></paper-input>
-                                    <paper-input label="Carpet" value="{{data.CARPWORK}}"></paper-input>
-                                    <paper-input label="Electricity" value="{{data.ELECWORK}}"></paper-input>
-                                    <paper-input label="Plumming word" value="{{data.PLUMWORK}}"></paper-input>
-                                    <paper-input label="Well repair" value="{{data.WELLREPIRE}}"></paper-input>
-                                </div>
+                            <legend>Repair Status</legend>
+                            <div class="layout horizontal layout-2-col wrap">
+                                <paper-input label="BUISTRUREP" value="{{data.BUISTRUREP}}"></paper-input>
+                                <paper-input label="Wall repair" value="{{data.COMWALREP}}"></paper-input>
+                                <paper-input label="Carpet" value="{{data.CARPWORK}}"></paper-input>
+                                <paper-input label="Electricity" value="{{data.ELECWORK}}"></paper-input>
+                                <paper-input label="Plumming word" value="{{data.PLUMWORK}}"></paper-input>
+                                <paper-input label="Well repair" value="{{data.WELLREPIRE}}"></paper-input>
+                            </div>
                         </fieldset>
                         <fieldset>
-                                <legend>Equipments Status</legend>
-                                <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input type="number" label="No of Fans" value="{{data.NOFAN}}"></paper-input>
-                                    <paper-input type="number" label="No of lights" value="{{data.NOLIGHTS}}"></paper-input>
-                                    <paper-input type="number" label="No of Cot" value="{{data.COT}}"></paper-input>
-                                    <paper-input type="number" label="No of chair" value="{{data.CHAIR}}"></paper-input>
-                                    <paper-input type="number" label="No of tables" value="{{data.NOTAB}}"></paper-input>
-                                    <paper-input type="number" label="No of matress" value="{{data.MATRESS}}"></paper-input>
-                                </div>
+                            <legend>Equipments Status</legend>
+                            <div class="layout horizontal layout-2-col wrap">
+                                <paper-input type="number" label="No of Fans" value="{{data.NOFAN}}"></paper-input>
+                                <paper-input type="number" label="No of lights" value="{{data.NOLIGHTS}}"></paper-input>
+                                <paper-input type="number" label="No of Cot" value="{{data.COT}}"></paper-input>
+                                <paper-input type="number" label="No of chair" value="{{data.CHAIR}}"></paper-input>
+                                <paper-input type="number" label="No of tables" value="{{data.NOTAB}}"></paper-input>
+                                <paper-input type="number" label="No of matress" value="{{data.MATRESS}}"></paper-input>
+                            </div>
                         </fieldset>
                     </form>
                 </div>
-        </iron-pages>
+            </iron-pages>
+            <iron-ajax id="xhr" content-type="application/json" handle-as="json" on-response="handleResponse" on-error="handleError"></iron-ajax>
+            <div id="toastcontainer1">
+                <paper-toast id="toast1" class="fit-bottom" text="Please fill in Name, Mobile Number appropriately" duration="4000">
+            </paper-toast></div>
+            <div id="toastcontainer2">
+                <paper-toast id="toast2" class="fit-bottom" text="Error while saving data, please try again" duration="4000">
+            </paper-toast></div>
+        </app-header-layout>
 
 
     </template>
@@ -29896,11 +30249,27 @@ Example:
                     }
                 }
             },
+            openDrawer: function () {
+                this.fire('app-open-drawer');
+            },
             attached: function () {
                 this.set('page', 'list');
+                this.$.toast1.fitInto = this.$.toastcontainer1;
+                this.$.toast2.fitInto = this.$.toastcontainer2;
             },
-            gotolist : function() {
-                this.set('page', 'list');        
+            gotolist: function () {
+                this.set('page', 'list');
+            },
+            saveForm: function () {
+                if (this.data.id) {
+                    this.$.xhr.method = 'PUT'
+                    this.$.xhr.url = "/api/formdata";
+                } else {
+                    this.$.xhr.method = 'POST'
+                    this.$.xhr.url = "/api/formdata/"; + this.data.id;
+                }
+                this.$.xhr.body = this.data;
+                this.$.xhr.generateRequest();
             },
             dosearch: function () {
                 if (this.searchstring == "") {
@@ -29945,6 +30314,15 @@ Example:
                 console.log('model ', e.model.item);
                 this.set('data', e.model.item);
                 this.set('page', 'form');
+            },
+            handleResponse: function (e) {
+                this.$.toast1.open;
+                if (e.detail.response) {
+                    this.data = e.detail.response;
+                }
+            },
+            handleError: function (e) {
+                this.$.toast2.open;
             }
         });
     </script>
@@ -30174,89 +30552,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
 
     <style>
-      :host {
-        --app-primary-color: #404040;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-      }
-
-      app-drawer {
-        --app-drawer-content-container: {
-          background-color: var(--app-primary-color);
-          overflow-x: hidden;
-        }
-        ;
-      }
-
-      app-drawer app-header {
-        background-color: var(--app-primary-color);
-      }
-
-      .nav-menu {
-        background-color: var(--app-primary-color);
-        color: #fff;
-      }
-
-      a {
-        text-decoration: none;
-        color: inherit;
-        font-size: inherit;
-      }
-
-      .nav-menu>paper-item {
-        display: block;
-        padding: 12px 16px;
-        font-size: 16px;
-        font-weight: 300;
-      }
-
-      .nav-menu>a {
-        display: block;
-        padding: 12px 16px;
-        font-size: 16px;
-        font-weight: 300;
-      }
-
-      .nav-menu>a.iron-selected {
-        background-color: #888;
-      }
-
-      .main-header {
-        border-bottom: 1px solid #ddd;
-        background-color: #fff;
-        color: #444;
-      }
-
-      .title-toolbar {
-        box-sizing: border-box;
-      }
-
-      .nav-title-toolbar {
-        color: #fff;
-        width: 100vw;
-      }
-
-      .main-title-toolbar {
-        width: 100%;
-      }
-
+      
       .title {
         font-size: 20px;
         font-weight: 200;
         padding-bottom: 0px;
-      }
-
-      survey-form {
-        min-height: 100vh;
-        margin: 0 auto;
-        width: 96%;
-        max-width: 720px;
-        margin-bottom: 48px;
-      }
-
-      article-headline {
-        @apply --shadow-transition;
-        @apply --shadow-elevation-2dp;
-        cursor: pointer;
       }
 
       .pages-container {
@@ -30264,32 +30564,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: flex;
       }
 
-      article-detail {
-        max-width: 736px;
-        margin: 64px auto;
-        background-color: #fff;
-        @apply --shadow-elevation-2dp;
-      }
-
       [hidden] {
         display: none;
       }
 
+      .drawer-title {
+        
+      }
       @media (max-width: 580px) {
-
-        /* make title smaller to fit on screen */
-        .title {
-          font-size: 20px;
-          padding-bottom: 0px;
-        }
-
-        survey-form {
-          min-height: 100vh;
-          margin: 0;
-          width: 96%;
-          margin-bottom: 48px;
-          max-width: none;
-        }
 
       }
 
@@ -30310,59 +30592,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- setup routes -->
     <app-location route="{{route}}"></app-location>
 
-    <app-drawer-layout drawer-width="288px" responsive-width="1280px" narrow="{{narrow}}">
-
-      <!-- nav panel -->
-      <app-drawer id="drawer" slot="drawer">
-        <app-header-layout has-scrolling-region="">
-
-          <app-header fixed="" slot="header">
-
-            <!-- top toolbar -->
-            <app-toolbar></app-toolbar>
-
-            <app-toolbar class="title-toolbar nav-title-toolbar">
-              <div class="nav-title">
-                Flood Devastation Index
-              </div>
-            </app-toolbar>
-
-          </app-header>
-
-
-          <!-- nav menu -->
-          <iron-selector class="nav-menu" attr-for-selected="name" on-iron-activate="_drawerSelected">
-            <!-- <a name="home" href="/">Home</a>
-            <a name="logout" href="/logout">Logout</a> -->
-            <paper-item on-tap="_resetForm">Reset Form</paper-item>
-          </iron-selector>
-
-        </app-header-layout>
-      </app-drawer>
-
-      <!-- main panel -->
-      <app-header-layout>
-
-        <app-header fixed="" effects="waterfall" class="main-header" slot="header">
-          <!-- top toolbar -->
-          <app-toolbar>
-            <!-- menu button -->
-            <paper-icon-button drawer-toggle="" icon="app:menu"></paper-icon-button>
-            <div class="title">Flood Devastation Index</div>
-          </app-toolbar>
-
-        </app-header>
-
-        <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
-          <login-element name="login"></login-element>
-          <data-form name="home"></data-form>
-        </iron-pages>
-        <!-- <div class="pages-container">
-        </div> -->
-
-      </app-header-layout>
-
-    </app-drawer-layout>
+ 
+      <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
+        <login-element name="login"></login-element>
+        <data-form name="home"></data-form>
+      </iron-pages>
 
   </template>
 
@@ -30396,7 +30630,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       observers: [],
       listeners: {
-        "login-success-event": "_handleLogin"
+        "login-success-event": "_handleLogin",
+        "app-open-drawer": "_openDrawer"
+      },
+      _openDrawer: function () {
+        //this.$.drawer.open();
       },
       attached: function () {
         var auth_token = localStorage.getItem('auth_token');

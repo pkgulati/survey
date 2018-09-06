@@ -1,7 +1,7 @@
 {
     "name": "FormData",
     "plural": "FormData",
-    "base": "PersistedModel",
+    "base": "BaseEntity",
     "idInjection": false,
     "options": {
         "validateUpsert": true
@@ -220,6 +220,20 @@
         },
         {
             "property": "update",
+            "accessType": "WRITE",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        },
+        {
+            "property": "updateAttributes",
+            "accessType": "WRITE",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        },
+        {
+            "property": "upsert",
             "accessType": "WRITE",
             "principalType": "ROLE",
             "principalId": "$authenticated",
