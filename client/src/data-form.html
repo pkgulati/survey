@@ -1,13 +1,31 @@
 <dom-module id="data-form">
 
     <template>
-        
-        <oe-input label="Search"> </oe-input>
-        <paper-button raised primary>Submit</paper-button>
-        TODO
-        Provide filter
-        Fetch data 
-        Display selected form
+
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            .search {
+                max-width: 500px;
+                margin: 16px auto;
+                display: inline;
+            }
+
+            .search>paper-button {
+                max-width: 200px;
+            }
+
+            paper-input {
+                max-width: 300px;
+            }
+        </style>
+
+        <div class="search layout horizontal">
+            <paper-input flex value={{searchstring}} placeholder="Search" on-change="dosearch"> </paper-input>
+        </div>
+        <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
+        <template is="dom-repeat" items={{list}}>
+            <div>[[item.GOID]]</div>
+            <div>[[item.NAME]]</div>
+        </template>
     </template>
 
     <script>
@@ -16,8 +34,35 @@
             is: 'data-form',
 
             properties: {
-
-               
+                searchstring: {
+                    type: String
+                },
+                list : {
+                    type : Array,
+                    value : function() {
+                        return [];
+                    }
+                 }
+            },
+            dosearch: function () {
+                console.log('search now ', this.searchstring);
+                var auth_token = localStorage.getItem('auth_token');
+                var filter = {};
+                filter = {
+                    where: {
+                        MOBILE1 : this.searchstring 
+                    }
+                };
+                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" + JSON.stringify(filter);
+                this.set('loaderVisible', true);
+                //this.$.spinner.active = true;
+                //this.$.fetch.body = JSON.stringify(body);
+                this.$.fetch.generateRequest();
+            },
+            _handleFetchSuccess : function(e) {
+                this.set('list', e.detail.response);
+            },
+            _handleFetchError:function(e) {
 
             }
 

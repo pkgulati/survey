@@ -241,7 +241,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         "login-success-event": "_handleLogin"
       },
       attached: function () {
-        this.set('page', 'login')
+        var auth_token = localStorage.getItem('auth_token');
+        if (auth_token) {
+          this.set('page', 'home')
+        } else {
+          this.set('page', 'login')
+        }
       },
       _handleLogin: function (e) {
         this.set('page', 'home')

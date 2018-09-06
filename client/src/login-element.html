@@ -165,7 +165,7 @@
         window.appdata.loggedin = true;
         this.set('loaderVisible', false);
         if (event.detail.response) {
-          //sessionStorage.setItem('auth_token', event.detail.response.access_token);
+          localStorage.setItem('auth_token', event.detail.response.id);
           this.fire('login-success-event', event.detail.response);
         }
       },

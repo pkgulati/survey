@@ -205,6 +205,20 @@
             "permission": "ALLOW"
         },
         {
+            "property": "find",
+            "accessType": "*",
+            "principalType": "ROLE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        },
+        {
+            "property": "find",
+            "accessType": "*",
+            "principalType": "EXECUTE",
+            "principalId": "$authenticated",
+            "permission": "ALLOW"
+        },
+        {
             "property": "update",
             "accessType": "WRITE",
             "principalType": "ROLE",
