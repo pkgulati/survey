@@ -79,8 +79,9 @@
             }
 
             .nav-item {
-                width : 100%;
+                width: 100%;
             }
+
             .form-header label {
                 font-size: 20px;
                 padding: 16px;
@@ -114,6 +115,11 @@
                     color: white !important;
                 }
                 ;
+            }
+            .espacer {
+                min-width : 100px;
+                width : 100%;
+                height : 64px;
             }
         </style>
 
@@ -207,12 +213,12 @@
                                     <paper-input label="Owner Name" value={{data.OWNER_NAM}}></paper-input>
                                     <paper-input label="Building Number" value={{data.BUILDING_N}}></paper-input>
                                     <paper-textarea label="Address" value={{data.ADDRESS}}></paper-textarea>
-                                    <paper-input label="Ownedres" value={{data.OWNEDREN}}></paper-input>
+                                    <pkg-dropdown list={{combo.ownrented}} label="Owned / Rented" value={{data.OWNEDREN}}></pkg-dropdown>
                                     <paper-input pattern="[0-9]+" label="Mobile no 1" value={{data.MOBILE1}}>
                                     </paper-input>
                                     <paper-input pattern="[0-9]+" label="Mobile no 2" value={{data.MOBILE2}}>
                                     </paper-input>
-                                    <paper-input label="GO Id" value={{data.GOID}}></paper-input>
+                                    <paper-input disabled label="GO Id" value={{data.GOID}}></paper-input>
                                     <paper-input label="Gis Id" value={{data.GIS_ID}}></paper-input>
                                 </div>
                             </fieldset>
@@ -282,22 +288,46 @@
                                     <paper-input label="Flood line (in meters)" value={{data.FLOODLINMT}}></paper-input>
                                     <paper-input label="Cow missing" value={{data.COW_MISS}}></paper-input>
                                     <paper-input label="Goat missing" value={{data.GOAT_MISS}}></paper-input>
-                                    <paper-input label="Loss of poultry" value={{data.POULTRYLOS}}></paper-input>
+                                    <paper-input label="Any poultry lost" value={{data.POULTRYLOS}}></paper-input>
                                 </div>
                             </fieldset>
                             <fieldset>
                                 <legend>Other details</legend>
                                 <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input label="Anyone missing in family" value={{data.PEOPLEMIS}}></paper-input>
                                     <paper-input label="Damage assessment" value={{data.DAMAGEASM}}></paper-input>
-                                    <paper-input label="Clean hours" value={{data.CLEANHRS}}></paper-input>
-                                    <paper-input label="PMOFLIV" value={{data.PMOFLIV}}></paper-input>
-                                    <paper-input label="Most dislos" value={{data.MOSTDISLOS}}></paper-input>
-                                    <paper-input label="Contact person" value={{data.CONT_PERSO}}></paper-input>
-                                    <paper-input label="Contact mobile" value={{data.CONT_MOB}}></paper-input>
-                                    <paper-input label="Remarks" value={{data.REMARKS}}></paper-input>
+                                    <paper-input label="Cleaning hours" value={{data.CLEANHRS}}></paper-input>
+                                    <paper-input label="Primary means of Living" value={{data.PMOFLIV}}></paper-input>
+                                    <paper-input label="Most Disastrous Loss" value={{data.MOSTDISLOS}}></paper-input>
+                                    <pkg-dropdown label="Cloth Required" value={{data.CLOTH_REQ}} list={{combo.yesno}}></pkg-dropdown>
+                                    <pkg-dropdown label="Utensils required" value={{data.UTEN_REQ}} list={{combo.yesno}}></pkg-dropdown>
+                                    <pkg-dropdown label="Utensils required" value={{data.GROCERY_REQ}} list={{combo.yesno}}></pkg-dropdown>
+                                    <pkg-dropdown label="Chair Type" value={{data.CHAR_TYPE}} list={{combo.chairtype}}></pkg-dropdown>
                                 </div>
                             </fieldset>
+                            <fieldset>
+                                <legend>Family Details</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Anyone missing in family" value={{data.PEOPLEMIS}}></paper-input>
+                                    <paper-input type="number" label="Number of members in family" value={{data.NUM_MEMBERS}}></paper-input>
+                                    <paper-input type="number" label="Age Group 1 to 5" value={{data.AG1TO5}}></paper-input>
+                                    <paper-input type="number" label="Age Group 5 to 10" value={{data.AG5TO10}}></paper-input>
+                                    <paper-input type="number" label="Age Group 10 to 18" value={{data.AG15TO18}}></paper-input>
+                                    <paper-input type="number" label="Age Group 18 to 60" value={{data.AG18TO60}}></paper-input>
+                                    <paper-input type="number" label="Number of Senior Citizen" value={{data.AG60ABOVE}}></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Contact and Feedback</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <pkg-dropdown label="Survey Feedback" value={{data.FEEDBACK}} list={{combo.feedback}}></pkg-dropdown>
+                                    <paper-textarea label="Remarks" value={{data.REMARKS}}></paper-textarea>
+                                    <paper-input label="Contact person" value={{data.CONT_PERSO}}></paper-input>
+                                    <paper-input label="Contact mobile" value={{data.CONT_MOB}}></paper-input>
+                                </div>
+                            </fieldset>
+                            <div class="espacer">
+
+                            </div>
                         </form>
                     </div>
                 </iron-pages>
@@ -328,7 +358,11 @@
                     value: function () {
                         return {
                             repair: ["YES", "NO", "REPAIRED"],
-                            docstatus : ["NIL", "LOST", "OBTAINED"]
+                            docstatus: ["NIL", "LOST", "OBTAINED"],
+                            chairtype: ["Living", "Dining"],
+                            yesno: ["YES", "NO"],
+                            feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
+                            ownrented: ["OWNED", "RENTED"]
                         }
                     }
                 }
@@ -397,8 +431,8 @@
                         inq: [upperString, this.searchstring]
                     }
                 });
-                conditions.push ({
-                    BUILDING_N : {
+                conditions.push({
+                    BUILDING_N: {
                         like: this.searchstring
                     }
                 })

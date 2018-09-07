@@ -1,7 +1,7 @@
 {
     "name": "FormData",
     "plural": "FormData",
-    "base": "PersistedModel",
+    "base": "BaseEntity",
     "idInjection": false,
     "options": {
         "validateUpsert": true
@@ -180,6 +180,39 @@
         },
         "CONT_MOB": {
             "type": "String"
+        },
+        "CHAIR_TYPE" : {
+            "type": "String"
+        },
+        "NUM_MEMBERS" : {
+            "type" : "Number"
+        },
+        "AGE1TO5" : {
+            "type" : "Number"
+        },
+        "AGE5TO10" : {
+            "type" : "Number"
+        },
+        "AGE10TO15" : {
+            "type" : "Number"
+        },
+        "AG15TO18" : {
+            "type" : "Number"
+        },
+        "AG18TO60" :{
+            "type" : "Number"
+        },
+        "CLOTH_REQ" : {
+            "type" : "String"
+        },
+        "UTEN_REQ" : {
+            "type" : "String"
+        },
+        "GROCERY_REQ" : {
+            "type" : "String"
+        },
+        "FEEDBACK" : {
+            "type" : "String"
         },
         "REMARKS" : {
             "type": "String"

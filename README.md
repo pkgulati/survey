@@ -2,8 +2,13 @@
 you must run npm install and bower install,
 You must be running a mongodb instance
 
-### TODO
+### To vulcanize 
+vulcanize all-imports.html > all-imports-vulcanized.html
 
-1. Provide Retrival of submitted data with mobile number and PIN
-2. Decide on mandatory fields
+### TODO
+1. Make GOID disabled for existing record
+2. Mobile Friendly
+3. Make History and Audit
+
+
 

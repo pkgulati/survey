@@ -23,11 +23,10 @@ module.exports = function(app) {
         }
         if (!user) {
             var userData  = {"id":"c18959d9-dc2f-4d54-b5ec-d70082beeb7e", "username" : "krfadmin", "email" : "pkgulati@gmail.com", "tenantId" : "default"};
-            userData.password = process.env.ADMIN_PASSWORD || 'blr23';
-            console.log('user password is ', userData.password);
+            userData.password = process.env.ADMIN_PASSWORD || 'kerala2323';
+            console.log('user id/password is ', userData.username, userData.password);
             userData.tenantId = 'default';
             User.create(userData, options, function(err, user) {
-                console.log(err, user);
             });
         }
     });
