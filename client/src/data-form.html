@@ -84,7 +84,14 @@
             }
 
             .form fieldset {
-                margin-bottom: 16px;
+                margin: 8px 0px;
+                background: #FFF;
+            }
+
+            .form fieldset legend {
+                letter-spacing: 0.7px;
+                text-transform: capitalize;
+                padding: 0px 4px;
             }
 
             .layout-2-col>* {
@@ -131,7 +138,7 @@
                     <!-- nav menu -->
                     <iron-selector class="nav-menu" attr-for-selected="name" on-iron-activate="_drawerSelected">
                         <!-- <a name="home" href="/">Home</a>
-                    <a name="logout" href="/logout">Logout</a> -->
+                            <a name="logout" href="/logout">Logout</a> -->
                         <paper-item on-tap="_resetForm">Reset Form</paper-item>
                     </iron-selector>
 
@@ -167,7 +174,7 @@
                 <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
-                            <paper-input value={{searchstring}} id="search-input" label="Search by name,mobile no or GIS_ID" on-change="dosearch">
+                            <paper-input autofocus value={{searchstring}} id="search-input" label="Search by name,mobile no or GIS_ID" on-change="dosearch">
                                 <iron-icon icon="search" slot="prefix"></iron-icon>
                             </paper-input>
                         </div>
@@ -190,7 +197,7 @@
 
                     </div>
                     <div name="form" class="form">
-                        <form>
+                        <form class="form-data-panel">
                             <fieldset>
                                 <legend>Personal Information</legend>
                                 <div class="layout horizontal layout-2-col wrap">
@@ -198,30 +205,95 @@
                                     <paper-input label="Building Number" value={{data.BUILDING_N}}></paper-input>
                                     <paper-input label="Address" value={{data.ADDRESS}}></paper-input>
                                     <paper-input label="Ownedres" value={{data.OWNEDREN}}></paper-input>
-                                    <paper-input pattern="[0-9]+" label="Mobile no 1" value={{data.MOBILE1}}></paper-input>
-                                    <paper-input pattern="[0-9]+" label="Mobile no 2" value={{data.MOBILE2}}></paper-input>
+                                    <paper-input pattern="[0-9]+" label="Mobile no 1" value={{data.MOBILE1}}>
+                                        <iron-icon icon="maps:local-phone" slot="prefix"></iron-icon>
+                                    </paper-input>
+                                    <paper-input pattern="[0-9]+" label="Mobile no 2" value={{data.MOBILE2}}>
+                                        <iron-icon icon="maps:local-phone" slot="prefix"></iron-icon>
+                                    </paper-input>
+                                    <paper-input label="GO Id" value={{data.GOID}}></paper-input>
+                                    <paper-input label="Gis Id" value={{data.GIS_ID}}></paper-input>
                                 </div>
                             </fieldset>
                             <fieldset>
                                 <legend>Repair Status</legend>
                                 <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input label="BUISTRUREP" value={{data.BUISTRUREP}}></paper-input>
-                                    <paper-input label="Wall repair" value={{data.COMWALREP}}></paper-input>
-                                    <paper-input label="Carpet" value={{data.CARPWORK}}></paper-input>
-                                    <paper-input label="Electricity" value={{data.ELECWORK}}></paper-input>
-                                    <paper-input label="Plumming word" value={{data.PLUMWORK}}></paper-input>
-                                    <paper-input label="Well repair" value={{data.WELLREPIRE}}></paper-input>
+                                    <paper-input label="Buildinf repair required" value={{data.BUISTRUREP}}></paper-input>
+                                    <paper-input label="Compound wall repair required" value={{data.COMWALREP}}></paper-input>
+                                    <paper-input label="Carpentary work required" value={{data.CARPWORK}}></paper-input>
+                                    <paper-input label="Electric work required" value={{data.ELECWORK}}></paper-input>
+                                    <paper-input label="Plumming work required" value={{data.PLUMWORK}}></paper-input>
+                                    <paper-input label="Well repair required" value={{data.WELLREPIRE}}></paper-input>
+                                    <paper-input label="TV repair required" value={{data.TVREQ}}></paper-input>
+                                    <paper-input label="Fridge repair required" value={{data.FRIDGE}}></paper-input>
+                                    <paper-input label="Washing machine repair required" value={{data.WASH_MECH}}></paper-input>
+                                    <paper-input label="Motor pump repair required" value={{data.MOTORPUMP}}></paper-input>
+                                    <paper-input label="Computer/laptop repair required" value={{data.COMP_LAP}}></paper-input>
+                                    <paper-input label="Other repairs required" value={{data.OTHERELEC}}></paper-input>
                                 </div>
                             </fieldset>
                             <fieldset>
-                                <legend>Equipments Status</legend>
+                                <legend>Equipments Reqired</legend>
                                 <div class="layout horizontal layout-2-col wrap">
                                     <paper-input type="number" label="No of Fans" value={{data.NOFAN}}></paper-input>
-                                    <paper-input type="number" label="No of lights" value={{data.NOLIGHTS}}></paper-input>
-                                    <paper-input type="number" label="No of Cot" value={{data.COT}}></paper-input>
-                                    <paper-input type="number" label="No of chair" value={{data.CHAIR}}></paper-input>
-                                    <paper-input type="number" label="No of tables" value={{data.NOTAB}}></paper-input>
-                                    <paper-input type="number" label="No of matress" value={{data.MATRESS}}></paper-input>
+                                    <paper-input type="number" label="No of Lights" value={{data.NOLIGHTS}}></paper-input>
+                                    <paper-input type="number" label="No of Cots" value={{data.COT}}></paper-input>
+                                    <paper-input type="number" label="No of Chairs" value={{data.CHAIR}}></paper-input>
+                                    <paper-input type="number" label="No of Tables" value={{data.NOTAB}}></paper-input>
+                                    <paper-input type="number" label="No of Mattress" value={{data.MATRESS}}></paper-input>
+                                    <paper-input label="Other furniture required" value={{data.OTHERFUR}}></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Items lost</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Sofa set lost" value={{data.SOFA_SET}}></paper-input>
+                                    <paper-input label="Student Cycle lost" value={{data.STUD_CYCLE}}></paper-input>
+                                    <paper-input label="Gas stove lost" value={{data.GAS_STOVE}}></paper-input>
+                                    <paper-input label="Gas cylinder lost" value={{data.GAS_CYLIN}}></paper-input>
+                                    <paper-input label="Mixie/Grinder lost" value={{data.MIXIE}}></paper-input>
+                                    <paper-input label="Other kitchen utensils lost" value={{data.OTH_KITCUT}}></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Documents lost</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Land record lost" value={{data.LAND_RECRD}}></paper-input>
+                                    <paper-input label="Aadhar card lost" value={{data.AADHAR}}></paper-input>
+                                    <paper-input label="PAN card lost" value={{data.PANCARD}}></paper-input>
+                                    <paper-input label="Ration card lost" value={{data.RATIONCARD}}></paper-input>
+                                    <paper-input label="Voter ID lost" value={{data.VOTERID}}></paper-input>
+                                    <paper-input label="Driving License lost" value={{data.DRIV_LICEN}}></paper-input>
+                                    <paper-input label="Educational certificate lost" value={{data.EDU_CERTI}}></paper-input>
+                                    <paper-input label="Passport lost" value={{data.PASSPORT}}></paper-input>
+                                    <paper-input label="Birth certificate lost" value={{data.BIRTH_CERT}}></paper-input>
+                                    <paper-input label="Death certificate lost" value={{data.DEATH_CERT}}></paper-input>
+                                    <paper-input label="Insurance policy lost" value={{data.INSUR_CARD}}></paper-input>
+                                    <paper-input label="Other documents lost" value={{data.OTHER_DOC}}></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Agriculture</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Loss of Agriculture" value={{data.AGRI_LOST}}></paper-input>
+                                    <paper-input label="Agriculture Loan availed" value={{data.AGRI_LOAN}}></paper-input>
+                                    <paper-input label="Flood line (in meters)" value={{data.FLOODLINMT}}></paper-input>
+                                    <paper-input label="Cow missing" value={{data.COW_MISS}}></paper-input>
+                                    <paper-input label="Goat missing" value={{data.GOAT_MISS}}></paper-input>
+                                    <paper-input label="Loss of poultry" value={{data.POULTRYLOS}}></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Other details</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Anyone missing in family" value={{data.PEOPLEMIS}}></paper-input>
+                                    <paper-input label="Damage assessment" value={{data.DAMAGEASM}}></paper-input>
+                                    <paper-input label="Clean hours" value={{data.CLEANHRS}}></paper-input>
+                                    <paper-input label="PMOFLIV" value={{data.PMOFLIV}}></paper-input>
+                                    <paper-input label="Most dislos" value={{data.MOSTDISLOS}}></paper-input>
+                                    <paper-input label="Verify remarks" value={{data.verifyRemarks}}></paper-input>
+                                    <paper-input label="Contact person" value={{data.CONT_PERSO}}></paper-input>
+                                    <paper-input label="Contact mobile" value={{data.CONT_MOB}}></paper-input>
                                 </div>
                             </fieldset>
                         </form>
@@ -250,7 +322,7 @@
                     }
                 }
             },
-            logout : function() {
+            logout: function () {
                 localStorage.removeItem("auth_token");
                 location.href = "/";
             },
@@ -292,19 +364,36 @@
                 var filter = {};
                 var conditions = [];
                 if (this.searchstring.length >= 10) {
-                    conditions.push({ MOBILE1: this.searchstring });
-                    conditions.push({ MOBILE2: this.searchstring });
+                    conditions.push({
+                        MOBILE1: this.searchstring
+                    });
+                    conditions.push({
+                        MOBILE2: this.searchstring
+                    });
                 }
-                conditions.push({ OWNER_NAM: { like: upperString } });
-                conditions.push({ OWNER_NAM: { like: this.searchstring } });
-                conditions.push({ GIS_ID: { inq: [upperString, this.searchstring] } });
+                conditions.push({
+                    OWNER_NAM: {
+                        like: upperString
+                    }
+                });
+                conditions.push({
+                    OWNER_NAM: {
+                        like: this.searchstring
+                    }
+                });
+                conditions.push({
+                    GIS_ID: {
+                        inq: [upperString, this.searchstring]
+                    }
+                });
                 filter = {
                     where: {
                         or: conditions
                     },
                     limit: 20
                 };
-                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" + JSON.stringify(filter);
+                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" + JSON.stringify(
+                    filter);
                 this.set('loaderVisible', true);
                 //this.$.spinner.active = true;
                 //this.$.fetch.body = JSON.stringify(body);
