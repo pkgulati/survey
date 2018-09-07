@@ -181,8 +181,8 @@
         "CONT_MOB": {
             "type": "String"
         },
-        "verifyRemarks" : {
-
+        "REMARKS" : {
+            "type": "String"
         }
     },
     "validations": [],

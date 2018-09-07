@@ -1,0 +1,46 @@
+<dom-module id="pkg-dropdown">
+
+    <template>
+
+        <style>
+            paper-dropdown-menu {
+                width : 100%;
+            }
+            paper-listbox {
+                min-width : 200px;
+            }
+        </style>
+   
+        <paper-dropdown-menu label="{{label}}" no-animations>
+            <paper-listbox attr-for-selected="name" slot="dropdown-content" selected="{{value}}">
+                <template is="dom-repeat" items=[[list]]>
+                    <paper-item name=[[item]]>[[item]]</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+    </template>
+
+
+    <script>
+        Polymer({
+            is: 'pkg-dropdown',
+            properties: {
+                label: {
+                    type: String
+                },
+                value: {
+                    type: String
+                },
+                list: {
+                    type: Array
+                }
+            },
+            attached : function() {
+                console.log(this.list);
+            },
+            debug : function() {
+                console.log(this.list);
+            }
+        });
+    </script>

@@ -203,13 +203,11 @@
                                 <div class="layout horizontal layout-2-col wrap">
                                     <paper-input label="Owner Name" value={{data.OWNER_NAM}}></paper-input>
                                     <paper-input label="Building Number" value={{data.BUILDING_N}}></paper-input>
-                                    <paper-input label="Address" value={{data.ADDRESS}}></paper-input>
+                                    <paper-textarea label="Address" value={{data.ADDRESS}}></paper-textarea>
                                     <paper-input label="Ownedres" value={{data.OWNEDREN}}></paper-input>
                                     <paper-input pattern="[0-9]+" label="Mobile no 1" value={{data.MOBILE1}}>
-                                        <iron-icon icon="maps:local-phone" slot="prefix"></iron-icon>
                                     </paper-input>
                                     <paper-input pattern="[0-9]+" label="Mobile no 2" value={{data.MOBILE2}}>
-                                        <iron-icon icon="maps:local-phone" slot="prefix"></iron-icon>
                                     </paper-input>
                                     <paper-input label="GO Id" value={{data.GOID}}></paper-input>
                                     <paper-input label="Gis Id" value={{data.GIS_ID}}></paper-input>
@@ -218,18 +216,19 @@
                             <fieldset>
                                 <legend>Repair Status</legend>
                                 <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input label="Buildinf repair required" value={{data.BUISTRUREP}}></paper-input>
-                                    <paper-input label="Compound wall repair required" value={{data.COMWALREP}}></paper-input>
-                                    <paper-input label="Carpentary work required" value={{data.CARPWORK}}></paper-input>
-                                    <paper-input label="Electric work required" value={{data.ELECWORK}}></paper-input>
-                                    <paper-input label="Plumming work required" value={{data.PLUMWORK}}></paper-input>
-                                    <paper-input label="Well repair required" value={{data.WELLREPIRE}}></paper-input>
-                                    <paper-input label="TV repair required" value={{data.TVREQ}}></paper-input>
-                                    <paper-input label="Fridge repair required" value={{data.FRIDGE}}></paper-input>
-                                    <paper-input label="Washing machine repair required" value={{data.WASH_MECH}}></paper-input>
-                                    <paper-input label="Motor pump repair required" value={{data.MOTORPUMP}}></paper-input>
-                                    <paper-input label="Computer/laptop repair required" value={{data.COMP_LAP}}></paper-input>
-                                    <paper-input label="Other repairs required" value={{data.OTHERELEC}}></paper-input>
+                                    <pkg-dropdown label="Building repair required" value={{data.BUISTRUREP}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Compound wall repair required" value={{data.COMWALREP}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Compound wall repair required" value={{data.COMWALREP}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Carpentary work required" value={{data.CARPWORK}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Electric work required" value={{data.ELECWORK}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Plumming work required" value={{data.PLUMWORK}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Well repair required" value={{data.WELLREPIRE}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="TV repair required" value={{data.TVREQ}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Fridge repair required" value={{data.FRIDGE}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Washing machine repair required" value={{data.WASH_MECH}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Motor pump repair required" value={{data.MOTORPUMP}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Computer/laptop repair required" value={{data.COMP_LAP}} list={{combo.repair}}></pkg-dropdown>
+                                    <paper-textarea label="Other repairs required" value={{data.OTHERELEC}}></paper-textarea>
                                 </div>
                             </fieldset>
                             <fieldset>
@@ -258,18 +257,18 @@
                             <fieldset>
                                 <legend>Documents lost</legend>
                                 <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input label="Land record lost" value={{data.LAND_RECRD}}></paper-input>
-                                    <paper-input label="Aadhar card lost" value={{data.AADHAR}}></paper-input>
-                                    <paper-input label="PAN card lost" value={{data.PANCARD}}></paper-input>
-                                    <paper-input label="Ration card lost" value={{data.RATIONCARD}}></paper-input>
-                                    <paper-input label="Voter ID lost" value={{data.VOTERID}}></paper-input>
-                                    <paper-input label="Driving License lost" value={{data.DRIV_LICEN}}></paper-input>
-                                    <paper-input label="Educational certificate lost" value={{data.EDU_CERTI}}></paper-input>
-                                    <paper-input label="Passport lost" value={{data.PASSPORT}}></paper-input>
-                                    <paper-input label="Birth certificate lost" value={{data.BIRTH_CERT}}></paper-input>
-                                    <paper-input label="Death certificate lost" value={{data.DEATH_CERT}}></paper-input>
-                                    <paper-input label="Insurance policy lost" value={{data.INSUR_CARD}}></paper-input>
-                                    <paper-input label="Other documents lost" value={{data.OTHER_DOC}}></paper-input>
+                                    <pkg-dropdown label="Land record lost" value={{data.LAND_RECRD}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Aadhar card lost" value={{data.AADHAR}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="PAN card lost" value={{data.PANCARD}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Ration card lost" value={{data.RATIONCARD}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Voter ID lost" value={{data.VOTERID}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Driving License lost" value={{data.DRIV_LICEN}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Educational certificate lost" value={{data.EDU_CERTI}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Passport lost" value={{data.PASSPORT}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Birth certificate lost" value={{data.BIRTH_CERT}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Death certificate lost" value={{data.DEATH_CERT}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <pkg-dropdown label="Insurance policy lost" value={{data.INSUR_CARD}} list={{combo.docstatus}}></pkg-dropdown>
+                                    <paper-textarea label="Other documents lost" value={{data.OTHER_DOC}}></paper-textarea>
                                 </div>
                             </fieldset>
                             <fieldset>
@@ -291,9 +290,9 @@
                                     <paper-input label="Clean hours" value={{data.CLEANHRS}}></paper-input>
                                     <paper-input label="PMOFLIV" value={{data.PMOFLIV}}></paper-input>
                                     <paper-input label="Most dislos" value={{data.MOSTDISLOS}}></paper-input>
-                                    <paper-input label="Verify remarks" value={{data.verifyRemarks}}></paper-input>
                                     <paper-input label="Contact person" value={{data.CONT_PERSO}}></paper-input>
                                     <paper-input label="Contact mobile" value={{data.CONT_MOB}}></paper-input>
+                                    <paper-input label="Remarks" value={{data.REMARKS}}></paper-input>
                                 </div>
                             </fieldset>
                         </form>
@@ -319,6 +318,15 @@
                     type: Array,
                     value: function () {
                         return [];
+                    }
+                },
+                combo: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            repair: ["YES", "NO", "REPAIRED"],
+                            docstatus : ["NIL", "LOST", "OBTAINED"]
+                        }
                     }
                 }
             },
@@ -386,6 +394,11 @@
                         inq: [upperString, this.searchstring]
                     }
                 });
+                conditions.push ({
+                    BUILDING_N : {
+                        like: this.searchstring
+                    }
+                })
                 filter = {
                     where: {
                         or: conditions
