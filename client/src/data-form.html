@@ -241,16 +241,15 @@
                                 <div class="layout horizontal layout-2-col wrap">
                                     <pkg-dropdown label="Building repair required" value={{data.BUISTRUREP}} list={{combo.repair}}></pkg-dropdown>
                                     <pkg-dropdown label="Compound wall repair required" value={{data.COMWALREP}} list={{combo.repair}}></pkg-dropdown>
-                                    <pkg-dropdown label="Compound wall repair required" value={{data.COMWALREP}} list={{combo.repair}}></pkg-dropdown>
                                     <pkg-dropdown label="Carpentary work required" value={{data.CARPWORK}} list={{combo.repair}}></pkg-dropdown>
                                     <pkg-dropdown label="Electric work required" value={{data.ELECWORK}} list={{combo.repair}}></pkg-dropdown>
                                     <pkg-dropdown label="Plumming work required" value={{data.PLUMWORK}} list={{combo.repair}}></pkg-dropdown>
-                                    <pkg-dropdown label="Well repair required" value={{data.WELLREPIRE}} list={{combo.repair}}></pkg-dropdown>
-                                    <pkg-dropdown label="TV repair required" value={{data.TVREQ}} list={{combo.repair}}></pkg-dropdown>
-                                    <pkg-dropdown label="Fridge repair required" value={{data.FRIDGE}} list={{combo.repair}}></pkg-dropdown>
-                                    <pkg-dropdown label="Washing machine repair required" value={{data.WASH_MECH}} list={{combo.repair}}></pkg-dropdown>
-                                    <pkg-dropdown label="Motor pump repair required" value={{data.MOTORPUMP}} list={{combo.repair}}></pkg-dropdown>
-                                    <pkg-dropdown label="Computer/laptop repair required" value={{data.COMP_LAP}} list={{combo.repair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Well repair required" value={{data.WELLREPIRE}} list={{combo.wellrepair}}></pkg-dropdown>
+                                    <pkg-dropdown label="TV repair required" value={{data.TVREQ}} list={{combo.lostrepair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Fridge repair required" value={{data.FRIDGE}} list={{combo.lostrepair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Washing machine repair required" value={{data.WASH_MECH}} list={{combo.lostrepair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Motor pump repair required" value={{data.MOTORPUMP}} list={{combo.lostrepair}}></pkg-dropdown>
+                                    <pkg-dropdown label="Computer/laptop repair required" value={{data.COMP_LAP}} list={{combo.lostrepair}}></pkg-dropdown>
                                     <paper-textarea label="Other repairs required" value={{data.OTHERELEC}}></paper-textarea>
                                 </div>
                             </fieldset>
@@ -371,8 +370,10 @@
                     type: Object,
                     value: function () {
                         return {
-                            repair: ["YES", "NO", "REPAIRED"],
-                            docstatus: ["NIL", "LOST", "OBTAINED"],
+                            repair: ["YES", "NO", "REPAIR", "ALREADY REPAIRED"],
+                            lostrepair: ["YES", "NO", "LOST", "REPAIR", "ALREADY REPAIRED"],
+                            wellrepair: ["YES", "NO", "CLEAN & REPAIR", "ALREADY REPAIRED"],
+                            docstatus: ["NIL", "LOST", "DAMAGED", "ALREADY OBTAINED"],
                             chairtype: ["Living", "Dining"],
                             yesno: ["YES", "NO"],
                             feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
@@ -446,9 +447,7 @@
                     }
                 });
                 conditions.push({
-                    BUILDING_N: {
-                        like: this.searchstring
-                    }
+                    BUILDING_N:  this.searchstring
                 })
                 filter = {
                     where: {
