@@ -36525,12 +36525,12 @@ Example:
                             <fieldset>
                                 <legend>Items lost</legend>
                                 <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input label="Sofa set lost" value="{{data.SOFA_SET}}"></paper-input>
-                                    <paper-input label="Student Cycle lost" value="{{data.STUD_CYCLE}}"></paper-input>
-                                    <paper-input label="Gas stove lost" value="{{data.GAS_STOVE}}"></paper-input>
-                                    <paper-input label="Gas cylinder lost" value="{{data.GAS_CYLIN}}"></paper-input>
-                                    <paper-input label="Mixie/Grinder lost" value="{{data.MIXIE}}"></paper-input>
-                                    <paper-input label="Other kitchen utensils lost" value="{{data.OTH_KITCUT}}"></paper-input>
+                                    <pkg-dropdown label="Sofa set lost" value="{{data.SOFA_SET}}" list="{{nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Student Cycle lost" value="{{data.STUD_CYCLE}}" list="{{nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Gas stove lost" value="{{data.GAS_STOVE}}" list="{{nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Gas cylinder lost" value="{{data.GAS_CYLIN}}" list="{{nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Mixie/Grinder lost" value="{{data.MIXIE}}" list="{{nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Other kitchen utensils lost" value="{{data.OTH_KITCUT}}"></pkg-dropdown>
                                 </div>
                             </fieldset>
                             <fieldset>
@@ -36564,7 +36564,7 @@ Example:
                             <fieldset>
                                 <legend>Other details</legend>
                                 <div class="layout horizontal layout-2-col wrap">
-                                    <paper-input label="Damage assessment" value="{{data.DAMAGEASM}}"></paper-input>
+                                    <pkg-dropdown label="Damage assessment" value="{{data.DAMAGEASM}}" list="{{damaged}}"></pkg-dropdown>
                                     <paper-input label="Cleaning hours" value="{{data.CLEANHRS}}"></paper-input>
                                     <paper-input label="Primary means of Living" value="{{data.PMOFLIV}}"></paper-input>
                                     <paper-input label="Most Disastrous Loss" value="{{data.MOSTDISLOS}}"></paper-input>
@@ -36627,11 +36627,13 @@ Example:
                     type: Object,
                     value: function () {
                         return {
-                            repair: ["YES", "NO", "REPAIR", "ALREADY REPAIRED"],
+                            repair: ["NIL", "YES", "NO", "REPAIR", "ALREADY REPAIRED"],
+                            nilrepairlost : ["NIL", "REPAIR", "LOST"],
                             lostrepair: ["YES", "NO", "LOST", "REPAIR", "ALREADY REPAIRED"],
                             wellrepair: ["YES", "NO", "CLEAN & REPAIR", "ALREADY REPAIRED"],
                             docstatus: ["NIL", "LOST", "DAMAGED", "ALREADY OBTAINED"],
                             chairtype: ["Living", "Dining"],
+                            damaged : ["FULLY DAMAGED", "PARTLY DAMAGED", "NO DAMAGE"],
                             yesno: ["YES", "NO"],
                             feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
                             ownrented: ["OWNED", "RENTED"]
