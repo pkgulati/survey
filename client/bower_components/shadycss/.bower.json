@@ -8,7 +8,7 @@
     "tag": "v1.5.0",
     "commit": "b71741bfb593ea313d6095f7fc101778ec87202c"
   },
-  "_source": "git://github.com/webcomponents/shadycss.git",
+  "_source": "https://github.com/webcomponents/shadycss.git",
   "_target": "^1.5.0",
   "_originalSource": "webcomponents/shadycss"
 }

@@ -28,16 +28,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template>
     </template>
     <script>
-      HTMLImports.whenReady(function() {
-        Polymer({
-          is: 'test-ripple',
-          behaviors: [
-            Polymer.IronButtonState,
-            Polymer.IronControlState,
-            Polymer.PaperRippleBehavior
-          ]
-        });
+    HTMLImports.whenReady(function() {
+      Polymer({
+        is: 'test-ripple',
+        behaviors: [
+          Polymer.IronButtonState,
+          Polymer.IronControlState,
+          Polymer.PaperRippleBehavior
+        ]
       });
+    });
     </script>
   </dom-module>
 
@@ -95,6 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       suite('Correct Targeting', function() {
+
         function assertInteractionCausesRipple(host, node, expected, msg) {
           var ripple = host.getRipple();
           Polymer.dom.flush();
@@ -103,8 +104,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           MockInteractions.up(node);
         }
 
-        function assertInteractionAtLocationCausesRipple(
-            host, node, location, expected, msg) {
+        function assertInteractionAtLocationCausesRipple(host, node, location, expected, msg) {
           var ripple = host.getRipple();
           Polymer.dom.flush();
           MockInteractions.down(node, location);
@@ -114,6 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         suite('basic', function() {
           suite('container = host', function() {
+
             setup(function() {
               ripple = fixture('ShadowBasic');
             });
@@ -122,16 +123,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               assertInteractionCausesRipple(ripple, ripple, true, 'ripple');
             });
             test('tap #wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, true, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, true, '#wrapper');
             });
             test('tap #separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, true, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, true, '#separate')
             });
           });
 
           suite('container = wrapper', function() {
+
             setup(function() {
               ripple = fixture('ShadowBasic');
               ripple._rippleContainer = ripple.$.wrapper;
@@ -142,17 +142,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap #wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, true, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, true, '#wrapper');
             });
 
             test('tap #separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, false, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, false, '#separate')
             });
           });
 
           suite('container = separate', function() {
+
             setup(function() {
               ripple = fixture('ShadowBasic');
               ripple._rippleContainer = ripple.$.separate;
@@ -163,13 +162,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, false, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, false, '#wrapper');
             });
 
             test('tap separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, true, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, true, '#separate')
             });
           });
         });
@@ -180,7 +177,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           function getTextLocation(ripple) {
             // build a Range to get the BCR of a given text node
             var r = document.createRange();
-            Polymer.dom.flush();
             r.selectNode(Polymer.dom(ripple.$.content).getDistributedNodes()[0]);
             return MockInteractions.middleOfNode(r);
           }
@@ -196,18 +192,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, true, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, true, '#wrapper');
             });
 
             test('tap separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, true, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, true, '#separate')
             });
 
             test('tap text', function() {
-              assertInteractionAtLocationCausesRipple(
-                  ripple, ripple.$.wrapper, textLocation, true, 'text');
+              assertInteractionAtLocationCausesRipple(ripple, ripple.$.wrapper, textLocation, true, 'text');
             });
           });
 
@@ -223,18 +216,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, true, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, true, '#wrapper');
             });
 
             test('tap separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, false, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, false, '#separate')
             });
 
             test('tap text', function() {
-              assertInteractionAtLocationCausesRipple(
-                  ripple, ripple.$.wrapper, textLocation, true, 'text');
+              assertInteractionAtLocationCausesRipple(ripple, ripple.$.wrapper, textLocation, true, 'text');
             });
           });
 
@@ -250,18 +240,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, false, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, false, '#wrapper');
             });
 
             test('tap separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, true, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, true, '#separate')
             });
 
             test('tap text', function() {
-              assertInteractionAtLocationCausesRipple(
-                  ripple, ripple.$.wrapper, textLocation, false, 'text');
+              assertInteractionAtLocationCausesRipple(ripple, ripple.$.wrapper, textLocation, false, 'text');
             });
           });
         });
@@ -280,13 +267,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, true, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, true, '#wrapper');
             });
 
             test('tap separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, true, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, true, '#separate')
             });
 
             test('tap source', function() {
@@ -306,13 +291,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, true, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, true, '#wrapper');
             });
 
             test('tap separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, false, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, false, '#separate')
             });
 
             test('tap source', function() {
@@ -332,13 +315,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('tap wrapper', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.wrapper, false, '#wrapper');
+              assertInteractionCausesRipple(ripple, ripple.$.wrapper, false, '#wrapper');
             });
 
             test('tap separate', function() {
-              assertInteractionCausesRipple(
-                  ripple, ripple.$.separate, true, '#separate')
+              assertInteractionCausesRipple(ripple, ripple.$.separate, true, '#separate')
             });
 
             test('tap source', function() {

@@ -50,7 +50,7 @@
     "tag": "v2.0.1",
     "commit": "cb0a9fd502a845096a63e4a1499fe43efe942638"
   },
-  "_source": "git://github.com/GoogleWebComponents/google-apis.git",
+  "_source": "https://github.com/GoogleWebComponents/google-apis.git",
   "_target": "1 - 2",
   "_originalSource": "GoogleWebComponents/google-apis"
 }

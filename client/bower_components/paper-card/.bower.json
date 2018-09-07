@@ -70,8 +70,7 @@
     "tag": "v2.1.0",
     "commit": "19214d885d36e6aefaf1391f8bb8a142136a9411"
   },
-  "_source": "git://github.com/PolymerElements/paper-card.git",
+  "_source": "https://github.com/PolymerElements/paper-card.git",
   "_target": "^2.1.0",
-  "_originalSource": "PolymerElements/paper-card",
-  "_direct": true
+  "_originalSource": "PolymerElements/paper-card"
 }

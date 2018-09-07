@@ -10,13 +10,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../polymer/polymer.html">
 
 <script>
+
   Polymer({
 
     is: 'simple-form',
 
     extends: 'form',
 
-    properties: {formElements: {type: Object, notify: true}},
+    properties: {
+      formElements: {
+        type: Object,
+        notify: true
+      }
+    },
 
     listeners: {
       'iron-form-element-register': '_elementRegistered',
@@ -43,4 +49,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
   });
+
 </script>
