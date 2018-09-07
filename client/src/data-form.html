@@ -82,6 +82,17 @@
                 width: 100%;
             }
 
+            .nav-title {
+                font-size: 20px;
+                padding: 16px;
+            }
+
+            .powered  {
+                font-size: 12px;
+                margin-top : 64px;
+                padding: 16px;
+            }
+
             .form-header label {
                 font-size: 20px;
                 padding: 16px;
@@ -134,11 +145,14 @@
                         <!-- top toolbar -->
                         <app-toolbar></app-toolbar>
 
-                        <app-toolbar class="title-toolbar layout vertical nav-title-toolbar">
+                        <app-toolbar class="title-toolbar layout vertical center nav-title-toolbar">
                             <div class="nav-title">
                                 Relief Information Management
                             </div>
                             <paper-item class="nav-item" on-tap="logout">Logout</paper-item>
+                            <div class="powered">
+                                Powered by oecloud.io
+                            </div>
                         </app-toolbar>
 
                     </app-header>
