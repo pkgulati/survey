@@ -35827,6 +35827,9 @@ Example:
                 cursor: pointer;
             }
 
+            .nav-item {
+                width : 100%;
+            }
             .form-header label {
                 font-size: 20px;
                 padding: 16px;
@@ -35874,11 +35877,11 @@ Example:
                         <!-- top toolbar -->
                         <app-toolbar></app-toolbar>
 
-                        <app-toolbar class="title-toolbar nav-title-toolbar">
+                        <app-toolbar class="title-toolbar layout vertical nav-title-toolbar">
                             <div class="nav-title">
                                 Relief Information Management
                             </div>
-                            <paper-item on-tap="logout">Logout</paper-item>
+                            <paper-item class="nav-item" on-tap="logout">Logout</paper-item>
                         </app-toolbar>
 
                     </app-header>
@@ -35923,7 +35926,7 @@ Example:
                 <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
-                            <paper-input autofocus="" value="{{searchstring}}" id="search-input" label="Search by name,mobile no or GIS_ID" on-change="dosearch">
+                            <paper-input autofocus="" value="{{searchstring}}" id="search-input" label="Search by name,mobile,Building,GISId" on-change="dosearch">
                                 <iron-icon icon="search" slot="prefix"></iron-icon>
                             </paper-input>
                         </div>
