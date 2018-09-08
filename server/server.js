@@ -20,5 +20,16 @@ oeApp.boot(app, options, function () {
 });
 
 app.get('/', function (req, res) {
+  console.log('Accessed the app');
   res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
+
+app.use('/api/*', function (req, res, next) {
+  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  console.log('API ',req.method, fullUrl);
+  if (req.body) {
+    console.log('Body ', JSON.stringify(req.body));
+  }
+  next();
+});
+
