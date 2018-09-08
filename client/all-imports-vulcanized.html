@@ -36344,9 +36344,9 @@ Example:
                 padding: 16px;
             }
 
-            .powered  {
+            .powered {
                 font-size: 12px;
-                margin-top : 64px;
+                margin-top: 64px;
                 padding: 16px;
             }
 
@@ -36384,10 +36384,11 @@ Example:
                 }
                 ;
             }
+
             .espacer {
-                min-width : 100px;
-                width : 100%;
-                height : 64px;
+                min-width: 100px;
+                width: 100%;
+                height: 64px;
             }
         </style>
 
@@ -36444,12 +36445,8 @@ Example:
 
                 </app-header>
 
-                <div id="toastcontainer1">
-                    <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" duration="4000">
-                </paper-toast></div>
-                <div id="toastcontainer2">
-                    <paper-toast id="toast2" class="fit-bottom" text="Error while saving data, please try again" duration="4000">
-                </paper-toast></div>
+                <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
+                <paper-toast id="toast2" class="fit-bottom" text="Error while saving data, please try again" aduration="4000"></paper-toast>
 
                 <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
@@ -36628,12 +36625,12 @@ Example:
                     value: function () {
                         return {
                             repair: ["NIL", "YES", "NO", "REPAIR", "ALREADY REPAIRED"],
-                            nilrepairlost : ["NIL", "REPAIR", "LOST"],
+                            nilrepairlost: ["NIL", "REPAIR", "LOST"],
                             lostrepair: ["YES", "NO", "LOST", "REPAIR", "ALREADY REPAIRED"],
                             wellrepair: ["YES", "NO", "CLEAN & REPAIR", "ALREADY REPAIRED"],
                             docstatus: ["NIL", "LOST", "DAMAGED", "ALREADY OBTAINED"],
                             chairtype: ["Living", "Dining"],
-                            damaged : ["FULLY DAMAGED", "PARTLY DAMAGED", "NO DAMAGE"],
+                            damaged: ["FULLY DAMAGED", "PARTLY DAMAGED", "NO DAMAGE"],
                             yesno: ["YES", "NO"],
                             feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
                             ownrented: ["OWNED", "RENTED"]
@@ -36651,8 +36648,6 @@ Example:
             },
             attached: function () {
                 this.set('page', 'list');
-                this.$.toast1.fitInto = this.$.toastcontainer1;
-                this.$.toast2.fitInto = this.$.toastcontainer2;
             },
             gotolist: function () {
                 this.set('page', 'list');
@@ -36706,7 +36701,7 @@ Example:
                     }
                 });
                 conditions.push({
-                    BUILDING_N:  this.searchstring
+                    BUILDING_N: this.searchstring
                 })
                 filter = {
                     where: {
@@ -36734,13 +36729,13 @@ Example:
                 this.set('page', 'form');
             },
             handleResponse: function (e) {
-                this.$.toast1.open;
+                this.$.toast1.open();
                 if (e.detail.response) {
                     this.data = e.detail.response;
                 }
             },
             handleError: function (e) {
-                this.$.toast2.open;
+                this.$.toast2.open();
             }
         });
     </script>

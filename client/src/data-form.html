@@ -87,9 +87,9 @@
                 padding: 16px;
             }
 
-            .powered  {
+            .powered {
                 font-size: 12px;
-                margin-top : 64px;
+                margin-top: 64px;
                 padding: 16px;
             }
 
@@ -127,10 +127,11 @@
                 }
                 ;
             }
+
             .espacer {
-                min-width : 100px;
-                width : 100%;
-                height : 64px;
+                min-width: 100px;
+                width: 100%;
+                height: 64px;
             }
         </style>
 
@@ -187,12 +188,8 @@
 
                 </app-header>
 
-                <div id="toastcontainer1">
-                    <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" duration="4000">
-                </div>
-                <div id="toastcontainer2">
-                    <paper-toast id="toast2" class="fit-bottom" text="Error while saving data, please try again" duration="4000">
-                </div>
+                <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
+                <paper-toast id="toast2" class="fit-bottom" text="Error while saving data, please try again" aduration="4000"></paper-toast>
 
                 <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
@@ -268,11 +265,11 @@
                             <fieldset>
                                 <legend>Items lost</legend>
                                 <div class="layout horizontal layout-2-col wrap">
-                                    <pkg-dropdown label="Sofa set lost" value={{data.SOFA_SET}}  list={{combo.nilrepairlost}}></pkg-dropdown>
+                                    <pkg-dropdown label="Sofa set lost" value={{data.SOFA_SET}} list={{combo.nilrepairlost}}></pkg-dropdown>
                                     <pkg-dropdown label="Student Cycle lost" value={{data.STUD_CYCLE}} list={{combo.nilrepairlost}}></pkg-dropdown>
-                                    <pkg-dropdown label="Gas stove lost" value={{data.GAS_STOVE}}  list={{combo.nilrepairlost}}></pkg-dropdown>
-                                    <pkg-dropdown label="Gas cylinder lost" value={{data.GAS_CYLIN}}  list={{combo.nilrepairlost}}></pkg-dropdown>
-                                    <pkg-dropdown label="Mixie/Grinder lost" value={{data.MIXIE}}  list={{combo.nilrepairlost}}></pkg-dropdown>
+                                    <pkg-dropdown label="Gas stove lost" value={{data.GAS_STOVE}} list={{combo.nilrepairlost}}></pkg-dropdown>
+                                    <pkg-dropdown label="Gas cylinder lost" value={{data.GAS_CYLIN}} list={{combo.nilrepairlost}}></pkg-dropdown>
+                                    <pkg-dropdown label="Mixie/Grinder lost" value={{data.MIXIE}} list={{combo.nilrepairlost}}></pkg-dropdown>
                                     <paper-textarea label="Other kitchen utensils lost" value={{data.OTH_KITCUT}}></paper-textarea>
                                 </div>
                             </fieldset>
@@ -371,12 +368,12 @@
                     value: function () {
                         return {
                             repair: ["NIL", "YES", "NO", "REPAIR", "ALREADY REPAIRED"],
-                            nilrepairlost : ["NIL", "REPAIR", "LOST"],
+                            nilrepairlost: ["NIL", "REPAIR", "LOST"],
                             lostrepair: ["YES", "NO", "LOST", "REPAIR", "ALREADY REPAIRED"],
                             wellrepair: ["YES", "NO", "CLEAN & REPAIR", "ALREADY REPAIRED"],
                             docstatus: ["NIL", "LOST", "DAMAGED", "ALREADY OBTAINED"],
                             chairtype: ["Living", "Dining"],
-                            damaged : ["FULLY DAMAGED", "PARTLY DAMAGED", "NO DAMAGE"],
+                            damaged: ["FULLY DAMAGED", "PARTLY DAMAGED", "NO DAMAGE"],
                             yesno: ["YES", "NO"],
                             feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
                             ownrented: ["OWNED", "RENTED"]
@@ -394,8 +391,6 @@
             },
             attached: function () {
                 this.set('page', 'list');
-                this.$.toast1.fitInto = this.$.toastcontainer1;
-                this.$.toast2.fitInto = this.$.toastcontainer2;
             },
             gotolist: function () {
                 this.set('page', 'list');
@@ -449,7 +444,7 @@
                     }
                 });
                 conditions.push({
-                    BUILDING_N:  this.searchstring
+                    BUILDING_N: this.searchstring
                 })
                 filter = {
                     where: {
@@ -477,13 +472,13 @@
                 this.set('page', 'form');
             },
             handleResponse: function (e) {
-                this.$.toast1.open;
+                this.$.toast1.open();
                 if (e.detail.response) {
                     this.data = e.detail.response;
                 }
             },
             handleError: function (e) {
-                this.$.toast2.open;
+                this.$.toast2.open();
             }
         });
     </script>
