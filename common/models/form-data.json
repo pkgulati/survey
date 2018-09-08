@@ -202,6 +202,9 @@
         "AG18TO60" :{
             "type" : "Number"
         },
+        "AGE60ABOVE" :{
+            "type" : "Number"
+        },
         "CLOTH_REQ" : {
             "type" : "String"
         },
