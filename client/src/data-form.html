@@ -182,6 +182,7 @@
                         <app-toolbar name="form">
                             <paper-icon-button on-tap="gotolist" icon="icons:arrow-back"></paper-icon-button>
                             <div class="title">Relief Form GIS ([[data.GIS_ID]])</div>
+                            <paper-spinner id="spinner2" class="multi"></paper-spinner>
                             <paper-button on-tap="saveForm" class="savebtn" raised>Save</paper-button>
                         </app-toolbar>
                     </iron-pages>
@@ -189,14 +190,16 @@
                 </app-header>
 
                 <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
-                <paper-toast id="toast2" class="fit-bottom" text="Error while saving data, please try again" aduration="4000"></paper-toast>
+                <paper-toast id="toast2" class="fit-bottom" text="Network/System error, please try again" aduration="4000"></paper-toast>
 
+                
                 <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
                             <paper-input autofocus value={{searchstring}} id="search-input" label="Search by name,mobile,Building,GISId" on-change="dosearch">
                                 <iron-icon icon="search" slot="prefix"></iron-icon>
                             </paper-input>
+                            <paper-spinner id="spinner1" class="multi"></paper-spinner>
                         </div>
                         <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
                         <div class="list-data" hidden=[[!list.length]]>
@@ -405,6 +408,7 @@
                     this.$.xhr.url = "/api/formdata/"; + this.data.id + "?access_token=" + auth_token;
                 }
                 this.$.xhr.body = this.data;
+                this.$.spinner2.active = true;
                 this.$.xhr.generateRequest();
             },
             dosearch: function () {
@@ -457,14 +461,17 @@
                 this.set('loaderVisible', true);
                 //this.$.spinner.active = true;
                 //this.$.fetch.body = JSON.stringify(body);
+                this.$.spinner1.active = true;
                 this.$.fetch.generateRequest();
             },
             _handleFetchSuccess: function (e) {
                 this.set('list', e.detail.response);
+                this.$.spinner1.active = false;
                 console.log('number of forms found ', this.list.length);
             },
             _handleFetchError: function (e) {
-
+                this.$.toast2.open();
+                this.$.spinner1.active = false;
             },
             _handleTap: function (e) {
                 console.log('model ', e.model.item);
@@ -473,11 +480,14 @@
             },
             handleResponse: function (e) {
                 this.$.toast1.open();
+                this.$.spinner2.active = false;
                 if (e.detail.response) {
                     this.data = e.detail.response;
                 }
+                this.set('page', 'list');
             },
             handleError: function (e) {
+                this.$.spinner2.active = false;
                 this.$.toast2.open();
             }
         });
