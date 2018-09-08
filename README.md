@@ -15,4 +15,5 @@ vulcanize all-imports.html > all-imports-vulcanized.html
 
 { "fields": { "GIS_ID" : true, "REMARKS" : true} , "where" : {"REMARKS" : {"gt" : ""} }}
 
-{ "fields2": { "FEEDBACK":true, "GIS_ID" : true, "REMARKS" : true} , "where" : {"_modifiedOn" : {"gt" : "2018-09-08T00:17:01.958Z"} }}
+{ "fields2": { "FEEDBACK":true, "GIS_ID" : true, "REMARKS" : true} , 
+"where" : {"_modifiedOn" : {"gt" : "2018-09-08T00:17:01.958Z"} }}

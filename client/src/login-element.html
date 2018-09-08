@@ -1,16 +1,17 @@
 <dom-module id="login-element">
   <template>
-    <style>
+    <style include="iron-flex iron-flex-alignment">
       :host {
         display: block;
         background-color: var(--default-background-color);
+        background-image: url("/siteimage.png");
       }
 
       .login-container {
-        max-width : 400px;
-        margin: 0px auto;
+        max-width: 400px;
         padding: 15px;
         background-color: white;
+        margin-top : 100px;
       }
 
       paper-input {
@@ -56,7 +57,12 @@
       }
 
       .customIcons {
-        margin-right : 8px;
+        margin-right: 8px;
+      }
+
+      card-container {
+        height: 100vh;
+        height : 100%;
       }
       iron-image {
         width: 140px;
@@ -68,44 +74,37 @@
         min-height: 40px;
       }
 
-      .collapse-content {
-        margin-top: 15px;
-        padding: 15px;
-        /* border: 1px solid #dedede; */
-      }
-
-      .bordered-box {
-        padding: 15px;
-        border: 1px solid #dedede;
-      }
-
-      @media (max-width: 767px) {
-        .login-wrapper {
-          padding: 0px 24px;
-        }
-      }
+     
     </style>
 
     <paper-spinner id="spinner" class="multi"></paper-spinner>
 
-    <div class="flex login-container layout vertical center">
-      <!-- <iron-image src="/images/evapp-logo.png"></iron-image> -->
-      <form class="flex layout vertical" is="iron-form" id="evloginForm">
-        <div class="box layout horizontal justified center">
-          <paper-input always-float-label label="Username" autocomplete="off" required error-message="{{usernameErrorMessage}}" value="{{username}}">
+    
+        
+    <div class="card-container horizontal layout center-justified">
+
+      <div class="login-container vertical layout center-justified">
+        <!-- <iron-image src="/siteimage.png"></iron-image>  -->
+        <form class="layout vertical" is="iron-form" id="evloginForm">
+          <div class="layout horizontal justified center">
+            <paper-input always-float-label label="Username" autocomplete="off" required error-message="{{usernameErrorMessage}}" value="{{username}}">
               <iron-icon slot="prefix" class="customIcons" icon="social:person" prefix></iron-icon>
             </paper-input>
+          </div>
+          <div class="layout horizontal justified center">
+            <paper-input always-float-label class="flex" label="Password" autocomplete="off" required error-message="{{passwordErrorMessage}}"
+              type="password" value="{{password}}">
+              <iron-icon slot="prefix" slot="prefix" class="customIcons" icon="communication:vpn-key" prefix></iron-icon>
+            </paper-input>
+          </div>
+          <div>[[errorMessage]]</div>
+        </form>
+        <div class="layout horizontal center-justified ">
+           <paper-button class="login-btn" primary on-tap="doLogin">Login</paper-button>
         </div>
-        <div class="box layout horizontal justified center">
-          <paper-input always-float-label class="flex" label="Password" autocomplete="off" required error-message="{{passwordErrorMessage}}"
-            type="password" value="{{password}}">
-            <iron-icon   slot="prefix" slot="prefix" class="customIcons" icon="communication:vpn-key" prefix></iron-icon>
-          </paper-input>
-        </div>
-        <div>[[errorMessage]]</div>
-      </form>
-      <paper-button class="login-btn" primary on-tap="doLogin">Login</paper-button>
+      </div>
     </div>
+ 
     <iron-ajax id="login" method="POST" content-type="application/json" on-response="_handleLoginSuccess" on-error="_handleLoginError"></iron-ajax>
     <iron-ajax id="session" method="GET" content-type="application/json" on-response="_handleSessionSuccess" on-error="_handleSessionError"></iron-ajax>
   </template>
