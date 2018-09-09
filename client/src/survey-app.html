@@ -16,7 +16,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
 
     <style>
-      
       .title {
         font-size: 20px;
         font-weight: 200;
@@ -29,19 +28,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       login-element {
-        height : 100vh;
+        height: 100vh;
       }
-      
+
       [hidden] {
         display: none;
       }
 
-      .drawer-title {
-        
-      }
-      @media (max-width: 580px) {
+      .drawer-title {}
 
-      }
+      @media (max-width: 580px) {}
 
       /* narrow layout */
 
@@ -60,11 +56,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- setup routes -->
     <app-location route="{{route}}"></app-location>
 
- 
-      <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
-        <login-element name="login"></login-element>
-        <data-form name="home"></data-form>
-      </iron-pages>
+    <iron-ajax id="session" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
+
+    <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
+      <loading-element name="loading"></loading-element>
+      <login-element name="login"></login-element>
+      <data-form name="home"></data-form>
+    </iron-pages>
 
   </template>
 
@@ -75,27 +73,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       properties: {
 
-        /**
-         * Articles data.
-         */
-        articles: Object,
-
+        page: {
+          type: 'String',
+          value: function () {
+            return 'loading';
+          }
+        },
         route: Object,
-
-
-        pageData: Object,
-
-        idData: Object,
-
         _scrollPositionMap: {
           type: Object,
           value: function () {
             return {};
           }
         }
-
       },
-
       observers: [],
       listeners: {
         "login-success-event": "_handleLogin",
@@ -107,10 +98,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       attached: function () {
         var auth_token = localStorage.getItem('auth_token');
         if (auth_token) {
-          this.set('page', 'home')
+          this.$.session.url = "/api/BaseUsers/session?access_token=" + auth_token;
+          this.$.session.generateRequest();
         } else {
           this.set('page', 'login')
         }
+      },
+      _handleFetchSuccess: function (e) {
+        var response = e.detail.response;
+        if (response.username) {
+          console.log(response.username);
+          this.set('page', 'home');
+        } else {
+          console.log('not logged in or logged out');
+          this.set('page', 'login');
+        }
+      },
+      _handleFetchError: function () {
+        //this.set('page', 'login')
+        console.log('could not reach server or fetch session');
       },
       _handleLogin: function (e) {
         this.set('page', 'home')
