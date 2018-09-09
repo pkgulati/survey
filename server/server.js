@@ -20,8 +20,12 @@ oeApp.boot(app, options, function () {
 });
 
 app.get('/', function (req, res) {
+  if (req.get('host') == 'localhost:3000') {
+    res.sendFile('index.html', { root: path.join(__dirname, '../client/') });    
+  } else {
+    res.sendFile('index-vulcanized.html', { root: path.join(__dirname, '../client/') });        
+  }
   console.log('Accessed the app');
-  res.sendFile('index.html', { root: path.join(__dirname, '../client/') });
 });
 
 app.use('/api/*', function (req, res, next) {

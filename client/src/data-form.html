@@ -150,7 +150,9 @@
                             <div class="nav-title">
                                 Relief Information Management
                             </div>
-                            <paper-item class="nav-item" on-tap="logout">Logout</paper-item>
+                            <div class="nav-item" on-tap="logout">
+                                Logout
+                            </div>
                             <div class="powered">
                                 Powered by oecloud.io
                             </div>
@@ -192,7 +194,7 @@
                 <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
                 <paper-toast id="toast2" class="fit-bottom" text="Network/System error, please try again" aduration="4000"></paper-toast>
 
-                
+
                 <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
