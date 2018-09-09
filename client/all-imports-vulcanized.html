@@ -37513,6 +37513,7 @@ Custom property | Description | Default
         this.$.spinner.active = true;
         this.$.login.body = JSON.stringify(body);
         this.$.login.generateRequest();
+        this.set('password', '');
       }
     });
 
@@ -37660,7 +37661,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _logout : function() {
         localStorage.removeItem("auth_token");
-        this.set('page', 'login');
+        window.location.href = "/";
+        window.location.reload(true);
       },
       _resetForm: function () {
         this.$.surveyform.resetForm();

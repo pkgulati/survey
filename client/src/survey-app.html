@@ -131,7 +131,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _logout : function() {
         localStorage.removeItem("auth_token");
-        this.set('page', 'login');
+        window.location.href = "/";
+        window.location.reload(true);
       },
       _resetForm: function () {
         this.$.surveyform.resetForm();

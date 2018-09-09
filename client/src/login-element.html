@@ -203,6 +203,7 @@
         this.$.spinner.active = true;
         this.$.login.body = JSON.stringify(body);
         this.$.login.generateRequest();
+        this.set('password', '');
       }
     });
 
