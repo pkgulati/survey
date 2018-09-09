@@ -37203,8 +37203,7 @@ Custom property | Description | Default
                 }
             },
             logout: function () {
-                localStorage.removeItem("auth_token");
-                location.href = "/";
+                this.fire('user-logout');
             },
             openDrawer: function () {
                 //this.fire('app-open-drawer');
@@ -37319,11 +37318,21 @@ Custom property | Description | Default
         background-image: url("/images/image1.jpeg");
       }
 
-      .login-container {
+      .outer {
+        height: 100vh;
+        height : 100%;
+        position: relative;;
+      }
+
+      .inner {
         max-width: 400px;
         padding: 15px;
         background-color: white;
         margin-top : 100px;
+        right : 50px;
+        position: absolute;
+        right: 50px;
+        top: 100px;
       }
 
       paper-input {
@@ -37372,10 +37381,7 @@ Custom property | Description | Default
         margin-right: 8px;
       }
 
-      card-container {
-        height: 100vh;
-        height : 100%;
-      }
+     
       iron-image {
         width: 140px;
         height: 40px;
@@ -37393,9 +37399,9 @@ Custom property | Description | Default
 
     
         
-    <div class="card-container horizontal layout center-justified">
+    <div class="outer">
 
-      <div class="login-container vertical layout center-justified">
+      <div class="inner vertical layout center-justified">
         <!-- <iron-image src="/siteimage.png"></iron-image>  -->
         <form class="layout vertical" is="iron-form" id="evloginForm">
           <div class="layout horizontal justified center">
@@ -37613,7 +37619,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       observers: [],
       listeners: {
         "login-success-event": "_handleLogin",
-        "app-open-drawer": "_openDrawer"
+        "app-open-drawer": "_openDrawer",
+        "user-logout" : "_logout"
       },
       _openDrawer: function () {
         //this.$.drawer.open();
@@ -37633,12 +37640,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log(response.username);
           this.set('page', 'home');
         } else {
-          console.log('not logged in or logged out');
-          this.set('page', 'login');
+          console.log('logged out');
+          window.location.href = "/";
+          window.location.reload(true);
         }
       },
       _handleFetchError: function () {
-        //this.set('page', 'login')
+        //this.set('page', 'login');
+        // give message to logout?
         console.log('could not reach server or fetch session');
       },
       _handleLogin: function (e) {
@@ -37647,6 +37656,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _equal: function (value1, value2) {
         return value1 === value2;
+      },
+      _logout : function() {
+        localStorage.removeItem("auth_token");
+        this.set('page', 'login');
       },
       _resetForm: function () {
         this.$.surveyform.resetForm();

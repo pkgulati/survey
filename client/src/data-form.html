@@ -385,8 +385,7 @@
                 }
             },
             logout: function () {
-                localStorage.removeItem("auth_token");
-                location.href = "/";
+                this.fire('user-logout');
             },
             openDrawer: function () {
                 //this.fire('app-open-drawer');

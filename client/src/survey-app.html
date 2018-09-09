@@ -90,7 +90,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       observers: [],
       listeners: {
         "login-success-event": "_handleLogin",
-        "app-open-drawer": "_openDrawer"
+        "app-open-drawer": "_openDrawer",
+        "user-logout" : "_logout"
       },
       _openDrawer: function () {
         //this.$.drawer.open();
@@ -110,12 +111,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log(response.username);
           this.set('page', 'home');
         } else {
-          console.log('not logged in or logged out');
-          this.set('page', 'login');
+          console.log('logged out');
+          window.location.href = "/";
+          window.location.reload(true);
         }
       },
       _handleFetchError: function () {
-        //this.set('page', 'login')
+        //this.set('page', 'login');
+        // give message to logout?
         console.log('could not reach server or fetch session');
       },
       _handleLogin: function (e) {
@@ -124,6 +127,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _equal: function (value1, value2) {
         return value1 === value2;
+      },
+      _logout : function() {
+        localStorage.removeItem("auth_token");
+        this.set('page', 'login');
       },
       _resetForm: function () {
         this.$.surveyform.resetForm();
