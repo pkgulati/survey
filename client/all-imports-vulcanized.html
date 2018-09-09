@@ -37641,6 +37641,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('page', 'home');
         } else {
           console.log('logged out');
+          localStorage.removeItem("auth_token");
           window.location.href = "/";
           window.location.reload(true);
         }
