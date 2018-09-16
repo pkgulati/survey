@@ -1,4 +1,4 @@
-<dom-module id="data-form">
+<dom-module id="filter-form">
 
     <template>
 
@@ -68,8 +68,6 @@
                 word-break: keep-all;
             }
 
-
-
             .form {
                 margin-left: 16px;
             }
@@ -133,6 +131,21 @@
                 width: 100%;
                 height: 64px;
             }
+
+            iron-collapse {
+                margin-left: 16px;
+            }
+
+            paper-checkbox {
+                min-width: 220px;
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+            .btn {
+                height: 36px;
+                margin-top: 8px;
+            }
         </style>
 
         <app-drawer-layout force-narrow>
@@ -164,7 +177,7 @@
                     <!-- nav menu -->
                     <iron-selector class="nav-menu" attr-for-selected="name" on-iron-activate="_drawerSelected">
                         <!-- <a name="home" href="/">Home</a>
-                            <a name="logout" href="/logout">Logout</a> -->
+                                <a name="logout" href="/logout">Logout</a> -->
                         <paper-item on-tap="_resetForm">Reset Form</paper-item>
                     </iron-selector>
 
@@ -194,7 +207,6 @@
                 <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
                 <paper-toast id="toast2" class="fit-bottom" text="Network/System error, please try again" aduration="4000"></paper-toast>
 
-
                 <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
@@ -202,7 +214,27 @@
                                 <iron-icon icon="search" on-tap="dosearch" slot="suffix"></iron-icon>
                             </paper-input>
                             <paper-spinner id="spinner1" class="multi"></paper-spinner>
+                            <paper-toggle-button checked="{{advfilter}}">Advance Filter</paper-toggle-button>
                         </div>
+                        <iron-collapse opened="[[advfilter]]">
+                            <div class="layout horizontal center-justified">
+                                <div>
+                                    <div class="layout horizontal">
+                                        <paper-checkbox value={{filter.feedbackPending}}>Feedback Pending</paper-checkbox>
+                                        <paper-checkbox value={{filter.anyRepairRequired}}>Any Repair Required</paper-checkbox>
+                                        <paper-checkbox value={{filter.anyDocumentMissingRequired}}>Any Document Missing</paper-checkbox>
+                                    </div>
+                                    <div class="layout horizontal">
+                                        <paper-checkbox value={{filter.rationCardLost}}>Ration Card Lost</paper-checkbox>
+                                        <paper-checkbox value={{filter.buildingRepairRequired}}>Building Repair Required</paper-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layout horizontal center-justified">
+                                <paper-button class="btn" raised on-tap="_filterSearch">Search</paper-button>
+                            </div>
+                        </iron-collapse>
+
                         <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
                         <div class="list-data" hidden=[[!list.length]]>
                             <h2 class="heading-2">Matching records ([[list.length]])</h2>
@@ -356,7 +388,7 @@
     <script>
         Polymer({
 
-            is: 'data-form',
+            is: 'filter-form',
 
             properties: {
                 searchstring: {
@@ -366,6 +398,16 @@
                     type: Array,
                     value: function () {
                         return [];
+                    }
+                },
+                advfilter : {
+                    type: Boolean,
+                    value : true
+                },
+                filter: {
+                    type: Object,
+                    value: function () {
+                        return {};
                     }
                 },
                 combo: {
@@ -412,18 +454,10 @@
                 this.$.spinner2.active = true;
                 this.$.xhr.generateRequest();
             },
-            dosearch: function () {
-                if (this.searchstring == "") {
-                    this.set('list', []);
-                    return;
-                }
-                if (this.searchstring.length < 3) {
-                    //raise toast
-                    return;
-                }
+            _search : function() {
                 var upperString = this.searchstring.toUpperCase();
                 var auth_token = localStorage.getItem('auth_token');
-                var filter = {};
+                var fullfilter = {};
                 var conditions = [];
                 if (this.searchstring.length >= 10) {
                     conditions.push({
@@ -450,20 +484,51 @@
                 });
                 conditions.push({
                     BUILDING_N: this.searchstring
-                })
-                filter = {
-                    where: {
-                        or: conditions
-                    },
-                    limit: 20
-                };
-                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" + JSON.stringify(
-                    filter);
+                });
+
+                if (this.advfilter) {
+                    var andFilter = [];
+                    if (this.filter.buildingRepairRequired) {
+                        andFilter.push({BUISTRUREP : {inq : ['YES', 'REPAIR']}});
+                    }
+                    fullfilter = {
+                        where : {
+                            and : andFilter
+                        },
+                        limit: 200
+                    }
+                }  
+                else
+                {
+                    fullfilter = {
+                        where: {
+                            or: conditions
+                        },
+                        limit: 20
+                    };
+                }
+
+                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" 
+                        + JSON.stringify(fullfilter);
                 this.set('loaderVisible', true);
                 //this.$.spinner.active = true;
                 //this.$.fetch.body = JSON.stringify(body);
                 this.$.spinner1.active = true;
                 this.$.fetch.generateRequest();
+            },
+            dosearch: function () {
+                if (this.searchstring == "") {
+                    this.set('list', []);
+                    return;
+                }
+                if (this.searchstring.length < 3) {
+                    //raise toast
+                    return;
+                }
+                this._search();
+            },
+            _filterSearch : function() {
+                this._search();
             },
             _handleFetchSuccess: function (e) {
                 this.set('list', e.detail.response);
