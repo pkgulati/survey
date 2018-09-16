@@ -38182,8 +38182,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
       <loading-element name="loading"></loading-element>
       <login-element name="login"></login-element>
-      <data-form name="home"></data-form>
-      <filter-form name="filter"></filter-form>
+      <data-form name="home1"></data-form>
+      <filter-form name="home"></filter-form>
     </iron-pages>
 
   </template>
@@ -39075,18 +39075,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <div class="layout horizontal center-justified">
                                 <div>
                                     <div class="layout horizontal">
-                                        <paper-checkbox value="{{filter.feedbackPending}}">Feedback Pending</paper-checkbox>
-                                        <paper-checkbox value="{{filter.anyRepairRequired}}">Any Repair Required</paper-checkbox>
-                                        <paper-checkbox value="{{filter.anyDocumentMissingRequired}}">Any Document Missing</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.feedbackPending}}">Feedback Pending</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.haveRemarks}}">Have Remarks</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.anyRepairRequired}}">Any Repair Required</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.anyDocumentMissing}}">Any Document Missing</paper-checkbox>
                                     </div>
                                     <div class="layout horizontal">
-                                        <paper-checkbox value="{{filter.rationCardLost}}">Ration Card Lost</paper-checkbox>
-                                        <paper-checkbox value="{{filter.buildingRepairRequired}}">Building Repair Required</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.rationCardLost}}">Ration Card Lost</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.buildingRepairRequired}}">Building Repair Required</paper-checkbox>
                                     </div>
                                 </div>
                             </div>
                             <div class="layout horizontal center-justified">
                                 <paper-button class="btn" raised="" on-tap="_filterSearch">Search</paper-button>
+                                <paper-item>Max 200 records</paper-item>
                             </div>
                         </iron-collapse>
 
@@ -39257,12 +39259,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 },
                 advfilter : {
                     type: Boolean,
-                    value : true
+                    value : false
                 },
                 filter: {
                     type: Object,
                     value: function () {
-                        return {};
+                        return {
+                            feedbackPending : true
+                        };
                     }
                 },
                 combo: {
@@ -39343,8 +39347,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 if (this.advfilter) {
                     var andFilter = [];
+                    if (this.searchstring != "" && conditions.length > 0) {
+                        andFilter.push({or:conditions})
+                    }
+                    if (this.filter.noRemarks) {
+                        andFilter.push({exists :  {REMARKS : false} });
+                    }
+                    if (this.filter.haveRemarks) {
+                        andFilter.push({REMARKS : {gt : ""} });
+                    }
                     if (this.filter.buildingRepairRequired) {
                         andFilter.push({BUISTRUREP : {inq : ['YES', 'REPAIR']}});
+                    }
+                    if (this.filter.anyRepairRequired) {
+                        var l1 = [
+                            {BUISTRUREP : {inq : ['YES', 'REPAIR']}},
+                            {COMWALREP : {inq : ['YES', 'REPAIR']}},
+                            {CARPWORK : {inq : ['YES', 'REPAIR']}},
+                            {PLUMWORK : {inq : ['YES', 'REPAIR']}},
+                            {WELLREPIRE : {inq : ['YES', 'REPAIR']}},
+                        ]
+                        andFilter.push({or:l1});
+                    }
+                   
+                    if (this.filter.anyDocumentMissing) {
+                        var l1 = [
+                            {LAND_RECRD : {inq : ['LOST', 'DAMAGED']}},
+                            {AADHAR : {inq : ['LOST', 'DAMAGED']}},
+                            {PANCARD : {inq : ['LOST', 'DAMAGED']}},
+                            {VOTERID : {inq : ['LOST', 'DAMAGED']}},
+                            {DRIV_LICEN : {inq : ['LOST', 'DAMAGED']}},
+                            {EDU_CERTI : {inq : ['LOST', 'DAMAGED']}},
+                            {PASSPORT : {inq : ['LOST', 'DAMAGED']}},
+                            {DEATH_CERT : {inq : ['LOST', 'DAMAGED']}},
+                            {INSUR_CARD : {inq : ['LOST', 'DAMAGED']}},
+                            {RATIONCARD : {inq : ['LOST', 'DAMAGED']}}
+                        ]
+                        andFilter.push({or:l1});
+                    }
+                    if (this.filter.rationCardLost) {
+                        andFilter.push({RATIONCARD : {inq : ["LOST", "DAMAGED"]}});
+                    }
+                    if (this.filter.feedbackPending) {
+                        andFilter.push({FEEDBACK : {nin : ["Modest", "Pleasing", "Ok", "Arrogant"]}});
+                    }
+                    console.log(andFilter);
+                    if (andFilter.length == 0) {
+                        return;
                     }
                     fullfilter = {
                         where : {

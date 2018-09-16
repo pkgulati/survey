@@ -221,6 +221,7 @@
                                 <div>
                                     <div class="layout horizontal">
                                         <paper-checkbox checked={{filter.feedbackPending}}>Feedback Pending</paper-checkbox>
+                                        <paper-checkbox checked={{filter.haveRemarks}}>Have Remarks</paper-checkbox>
                                         <paper-checkbox checked={{filter.anyRepairRequired}}>Any Repair Required</paper-checkbox>
                                         <paper-checkbox checked={{filter.anyDocumentMissing}}>Any Document Missing</paper-checkbox>
                                     </div>
@@ -232,6 +233,7 @@
                             </div>
                             <div class="layout horizontal center-justified">
                                 <paper-button class="btn" raised on-tap="_filterSearch">Search</paper-button>
+                                <paper-item>Max 200 records</paper-item>
                             </div>
                         </iron-collapse>
 
@@ -402,7 +404,7 @@
                 },
                 advfilter : {
                     type: Boolean,
-                    value : true
+                    value : false
                 },
                 filter: {
                     type: Object,
@@ -492,6 +494,12 @@
                     var andFilter = [];
                     if (this.searchstring != "" && conditions.length > 0) {
                         andFilter.push({or:conditions})
+                    }
+                    if (this.filter.noRemarks) {
+                        andFilter.push({exists :  {REMARKS : false} });
+                    }
+                    if (this.filter.haveRemarks) {
+                        andFilter.push({REMARKS : {gt : ""} });
                     }
                     if (this.filter.buildingRepairRequired) {
                         andFilter.push({BUISTRUREP : {inq : ['YES', 'REPAIR']}});
