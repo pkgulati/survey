@@ -1,5 +1,4 @@
-<html><head><meta charset="UTF-8"><!-- <link rel="import" href="bower_components/paper-card/paper-card.html"> -->
-<!-- <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html"> -->
+<html><head><meta charset="UTF-8"><!-- <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html"> -->
 <!--<link rel="import" href="styles/app-theme.html">-->
 <!-- <link rel="import" href="styles/shared-styles.html"> -->
 </head><body><div hidden="" by-vulcanize=""><!--
@@ -26124,6 +26123,324 @@ Custom property | Description | Default
 </script>
 <!--
 @license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><!--
+Material design: [Checkbox](https://www.google.com/design/spec/components/selection-controls.html#selection-controls-checkbox)
+
+`paper-checkbox` is a button that can be either checked or unchecked.  User
+can tap the checkbox to check or uncheck it.  Usually you use checkboxes
+to allow user to select multiple options from a set.  If you have a single
+ON/OFF option, avoid using a single checkbox and use `paper-toggle-button`
+instead.
+
+Example:
+
+    <paper-checkbox>label</paper-checkbox>
+
+    <paper-checkbox checked> label</paper-checkbox>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-checkbox-unchecked-background-color` | Checkbox background color when the input is not checked | `transparent`
+`--paper-checkbox-unchecked-color` | Checkbox border color when the input is not checked | `--primary-text-color`
+`--paper-checkbox-unchecked-ink-color` | Selected/focus ripple color when the input is not checked | `--primary-text-color`
+`--paper-checkbox-checked-color` | Checkbox color when the input is checked | `--primary-color`
+`--paper-checkbox-checked-ink-color` | Selected/focus ripple color when the input is checked | `--primary-color`
+`--paper-checkbox-checkmark-color` | Checkmark color | `white`
+`--paper-checkbox-label-color` | Label color | `--primary-text-color`
+`--paper-checkbox-label-checked-color` | Label color when the input is checked | `--paper-checkbox-label-color`
+`--paper-checkbox-label-spacing` | Spacing between the label and the checkbox | `8px`
+`--paper-checkbox-label` | Mixin applied to the label | `{}`
+`--paper-checkbox-label-checked` | Mixin applied to the label when the input is checked | `{}`
+`--paper-checkbox-error-color` | Checkbox color when invalid | `--error-color`
+`--paper-checkbox-size` | Size of the checkbox | `18px`
+`--paper-checkbox-ink-size` | Size of the ripple | `48px`
+`--paper-checkbox-margin` | Margin around the checkbox container | `initial`
+`--paper-checkbox-vertical-align` | Vertical alignment of the checkbox container | `middle`
+
+This element applies the mixin `--paper-font-common-base` but does not import `paper-styles/typography.html`.
+In order to apply the `Roboto` font to this element, make sure you've imported `paper-styles/typography.html`.
+
+@demo demo/index.html
+-->
+
+<dom-module id="paper-checkbox" assetpath="bower_components/paper-checkbox/">
+  <template strip-whitespace="">
+    <style>
+      :host {
+        display: inline-block;
+        white-space: nowrap;
+        cursor: pointer;
+        --calculated-paper-checkbox-size: var(--paper-checkbox-size, 18px);
+        /* -1px is a sentinel for the default and is replaced in `attached`. */
+        --calculated-paper-checkbox-ink-size: var(--paper-checkbox-ink-size, -1px);
+        @apply --paper-font-common-base;
+        line-height: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :host([hidden]) {
+        display: none !important;
+      }
+
+      :host(:focus) {
+        outline: none;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      #checkboxContainer {
+        display: inline-block;
+        position: relative;
+        width: var(--calculated-paper-checkbox-size);
+        height: var(--calculated-paper-checkbox-size);
+        min-width: var(--calculated-paper-checkbox-size);
+        margin: var(--paper-checkbox-margin, initial);
+        vertical-align: var(--paper-checkbox-vertical-align, middle);
+        background-color: var(--paper-checkbox-unchecked-background-color, transparent);
+      }
+
+      #ink {
+        position: absolute;
+
+        /* Center the ripple in the checkbox by negative offsetting it by
+         * (inkWidth - rippleWidth) / 2 */
+        top: calc(0px - (var(--calculated-paper-checkbox-ink-size) - var(--calculated-paper-checkbox-size)) / 2);
+        left: calc(0px - (var(--calculated-paper-checkbox-ink-size) - var(--calculated-paper-checkbox-size)) / 2);
+        width: var(--calculated-paper-checkbox-ink-size);
+        height: var(--calculated-paper-checkbox-ink-size);
+        color: var(--paper-checkbox-unchecked-ink-color, var(--primary-text-color));
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      #ink:dir(rtl) {
+        right: calc(0px - (var(--calculated-paper-checkbox-ink-size) - var(--calculated-paper-checkbox-size)) / 2);
+        left: auto;
+      }
+
+      #ink[checked] {
+        color: var(--paper-checkbox-checked-ink-color, var(--primary-color));
+      }
+
+      #checkbox {
+        position: relative;
+        box-sizing: border-box;
+        height: 100%;
+        border: solid 2px;
+        border-color: var(--paper-checkbox-unchecked-color, var(--primary-text-color));
+        border-radius: 2px;
+        pointer-events: none;
+        -webkit-transition: background-color 140ms, border-color 140ms;
+        transition: background-color 140ms, border-color 140ms;
+      }
+
+      /* checkbox checked animations */
+      #checkbox.checked #checkmark {
+        -webkit-animation: checkmark-expand 140ms ease-out forwards;
+        animation: checkmark-expand 140ms ease-out forwards;
+      }
+
+      @-webkit-keyframes checkmark-expand {
+        0% {
+          -webkit-transform: scale(0, 0) rotate(45deg);
+        }
+        100% {
+          -webkit-transform: scale(1, 1) rotate(45deg);
+        }
+      }
+
+      @keyframes checkmark-expand {
+        0% {
+          transform: scale(0, 0) rotate(45deg);
+        }
+        100% {
+          transform: scale(1, 1) rotate(45deg);
+        }
+      }
+
+      #checkbox.checked {
+        background-color: var(--paper-checkbox-checked-color, var(--primary-color));
+        border-color: var(--paper-checkbox-checked-color, var(--primary-color));
+      }
+
+      #checkmark {
+        position: absolute;
+        width: 36%;
+        height: 70%;
+        border-style: solid;
+        border-top: none;
+        border-left: none;
+        border-right-width: calc(2/15 * var(--calculated-paper-checkbox-size));
+        border-bottom-width: calc(2/15 * var(--calculated-paper-checkbox-size));
+        border-color: var(--paper-checkbox-checkmark-color, white);
+        -webkit-transform-origin: 97% 86%;
+        transform-origin: 97% 86%;
+        box-sizing: content-box; /* protect against page-level box-sizing */
+      }
+
+      #checkmark:dir(rtl) {
+        -webkit-transform-origin: 50% 14%;
+        transform-origin: 50% 14%;
+      }
+
+      /* label */
+      #checkboxLabel {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: var(--paper-checkbox-label-spacing, 8px);
+        white-space: normal;
+        line-height: normal;
+        color: var(--paper-checkbox-label-color, var(--primary-text-color));
+        @apply --paper-checkbox-label;
+      }
+
+      :host([checked]) #checkboxLabel {
+        color: var(--paper-checkbox-label-checked-color, var(--paper-checkbox-label-color, var(--primary-text-color)));
+        @apply --paper-checkbox-label-checked;
+      }
+
+      #checkboxLabel:dir(rtl) {
+        padding-right: var(--paper-checkbox-label-spacing, 8px);
+        padding-left: 0;
+      }
+
+      #checkboxLabel[hidden] {
+        display: none;
+      }
+
+      /* disabled state */
+
+      :host([disabled]) #checkbox {
+        opacity: 0.5;
+        border-color: var(--paper-checkbox-unchecked-color, var(--primary-text-color));
+      }
+
+      :host([disabled][checked]) #checkbox {
+        background-color: var(--paper-checkbox-unchecked-color, var(--primary-text-color));
+        opacity: 0.5;
+      }
+
+      :host([disabled]) #checkboxLabel  {
+        opacity: 0.65;
+      }
+
+      /* invalid state */
+      #checkbox.invalid:not(.checked) {
+        border-color: var(--paper-checkbox-error-color, var(--error-color));
+      }
+    </style>
+
+    <div id="checkboxContainer">
+      <div id="checkbox" class$="[[_computeCheckboxClass(checked, invalid)]]">
+        <div id="checkmark" class$="[[_computeCheckmarkClass(checked)]]"></div>
+      </div>
+    </div>
+
+    <div id="checkboxLabel"><slot></slot></div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'paper-checkbox',
+
+      behaviors: [Polymer.PaperCheckedElementBehavior],
+
+      /** @private */
+      hostAttributes: {role: 'checkbox', 'aria-checked': false, tabindex: 0},
+
+      properties: {
+        /**
+         * Fired when the checked state changes due to user interaction.
+         *
+         * @event change
+         */
+
+        /**
+         * Fired when the checked state changes.
+         *
+         * @event iron-change
+         */
+        ariaActiveAttribute: {type: String, value: 'aria-checked'}
+      },
+
+      attached: function() {
+        // Wait until styles have resolved to check for the default sentinel.
+        // See polymer#4009 for more details.
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          var inkSize =
+              this.getComputedStyleValue('--calculated-paper-checkbox-ink-size')
+                  .trim();
+          // If unset, compute and set the default `--paper-checkbox-ink-size`.
+          if (inkSize === '-1px') {
+            var checkboxSizeText =
+                this.getComputedStyleValue('--calculated-paper-checkbox-size')
+                    .trim();
+
+            var units = 'px';
+            var unitsMatches = checkboxSizeText.match(/[A-Za-z]+$/);
+            if (unitsMatches !== null) {
+              units = unitsMatches[0];
+            }
+
+            var checkboxSize = parseFloat(checkboxSizeText);
+            var defaultInkSize = (8 / 3) * checkboxSize;
+
+            if (units === 'px') {
+              defaultInkSize = Math.floor(defaultInkSize);
+
+              // The checkbox and ripple need to have the same parity so that their
+              // centers align.
+              if (defaultInkSize % 2 !== checkboxSize % 2) {
+                defaultInkSize++;
+              }
+            }
+
+            this.updateStyles({
+              '--paper-checkbox-ink-size': defaultInkSize + units,
+            });
+          }
+        });
+      },
+
+      _computeCheckboxClass: function(checked, invalid) {
+        var className = '';
+        if (checked) {
+          className += 'checked ';
+        }
+        if (invalid) {
+          className += 'invalid';
+        }
+        return className;
+      },
+
+      _computeCheckmarkClass: function(checked) {
+        return checked ? '' : 'hidden';
+      },
+
+      // create ripple inside the checkboxContainer
+      _createRipple: function() {
+        this._rippleContainer = this.$.checkboxContainer;
+        return Polymer.PaperInkyFocusBehaviorImpl._createRipple.call(this);
+      }
+
+    });
+  </script>
+</dom-module>
+<!--
+@license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
 The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -36816,6 +37133,278 @@ Custom property | Description | Default
     });
   </script>
 </dom-module>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><!--
+Material design: [Switch](https://www.google.com/design/spec/components/selection-controls.html#selection-controls-switch)
+
+`paper-toggle-button` provides a ON/OFF switch that user can toggle the state
+by tapping or by dragging the switch.
+
+Example:
+
+    <paper-toggle-button></paper-toggle-button>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--paper-toggle-button-unchecked-bar-color` | Slider color when the input is not checked | `#000000`
+`--paper-toggle-button-unchecked-button-color` | Button color when the input is not checked | `--paper-grey-50`
+`--paper-toggle-button-unchecked-ink-color` | Selected/focus ripple color when the input is not checked | `--dark-primary-color`
+`--paper-toggle-button-checked-bar-color` | Slider button color when the input is checked | `--primary-color`
+`--paper-toggle-button-checked-button-color` | Button color when the input is checked | `--primary-color`
+`--paper-toggle-button-checked-ink-color` | Selected/focus ripple color when the input is checked | `--primary-color`
+`--paper-toggle-button-invalid-bar-color` | Slider button color when the input is invalid | `--error-color`
+`--paper-toggle-button-invalid-button-color` | Button color when the input is invalid | `--error-color`
+`--paper-toggle-button-invalid-ink-color` | Selected/focus ripple color when the input is invalid | `--error-color`
+`--paper-toggle-button-unchecked-bar` | Mixin applied to the slider when the input is not checked | `{}`
+`--paper-toggle-button-unchecked-button` | Mixin applied to the slider button when the input is not checked | `{}`
+`--paper-toggle-button-unchecked-ink` | Mixin applied to the ripple when the input is not checked | `{}`
+`--paper-toggle-button-checked-bar` | Mixin applied to the slider when the input is checked | `{}`
+`--paper-toggle-button-checked-button` | Mixin applied to the slider button when the input is checked | `{}`
+`--paper-toggle-button-checked-ink` | Mixin applied to the ripple when the input is checked | `{}`
+`--paper-toggle-button-label-color` | Label color | `--primary-text-color`
+`--paper-toggle-button-label-spacing` | Spacing between the label and the button | `8px`
+
+This element applies the mixin `--paper-font-common-base` but does not import `paper-styles/typography.html`.
+In order to apply the `Roboto` font to this element, make sure you've imported `paper-styles/typography.html`.
+
+@group Paper Elements
+@element paper-toggle-button
+@hero hero.svg
+@demo demo/index.html
+-->
+
+<dom-module id="paper-toggle-button" assetpath="bower_components/paper-toggle-button/">
+  <template strip-whitespace="">
+
+    <style>
+      :host {
+        display: inline-block;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        @apply --paper-font-common-base;
+      }
+
+      :host([disabled]) {
+        pointer-events: none;
+      }
+
+      :host(:focus) {
+        outline:none;
+      }
+
+      .toggle-bar {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        border-radius: 8px;
+        pointer-events: none;
+        opacity: 0.4;
+        transition: background-color linear .08s;
+        background-color: var(--paper-toggle-button-unchecked-bar-color, #000000);
+
+        @apply --paper-toggle-button-unchecked-bar;
+      }
+
+      .toggle-button {
+        position: absolute;
+        top: -3px;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.6);
+        transition: -webkit-transform linear .08s, background-color linear .08s;
+        transition: transform linear .08s, background-color linear .08s;
+        will-change: transform;
+        background-color: var(--paper-toggle-button-unchecked-button-color, var(--paper-grey-50));
+
+        @apply --paper-toggle-button-unchecked-button;
+      }
+
+      .toggle-button.dragging {
+        -webkit-transition: none;
+        transition: none;
+      }
+
+      :host([checked]:not([disabled])) .toggle-bar {
+        opacity: 0.5;
+        background-color: var(--paper-toggle-button-checked-bar-color, var(--primary-color));
+
+        @apply --paper-toggle-button-checked-bar;
+      }
+
+      :host([disabled]) .toggle-bar {
+        background-color: #000;
+        opacity: 0.12;
+      }
+
+      :host([checked]) .toggle-button {
+        -webkit-transform: translate(16px, 0);
+        transform: translate(16px, 0);
+      }
+
+      :host([checked]:not([disabled])) .toggle-button {
+        background-color: var(--paper-toggle-button-checked-button-color, var(--primary-color));
+
+        @apply --paper-toggle-button-checked-button;
+      }
+
+      :host([disabled]) .toggle-button {
+        background-color: #bdbdbd;
+        opacity: 1;
+      }
+
+      .toggle-ink {
+        position: absolute;
+        top: -14px;
+        left: -14px;
+        right: auto;
+        bottom: auto;
+        width: 48px;
+        height: 48px;
+        opacity: 0.5;
+        pointer-events: none;
+        color: var(--paper-toggle-button-unchecked-ink-color, var(--primary-text-color));
+
+        @apply --paper-toggle-button-unchecked-ink;
+      }
+
+      :host([checked]) .toggle-ink {
+        color: var(--paper-toggle-button-checked-ink-color, var(--primary-color));
+
+        @apply --paper-toggle-button-checked-ink;
+      }
+
+      .toggle-container {
+        display: inline-block;
+        position: relative;
+        width: 36px;
+        height: 14px;
+        /* The toggle button has an absolute position of -3px; The extra 1px
+        /* accounts for the toggle button shadow box. */
+        margin: 4px 1px;
+      }
+
+      .toggle-label {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: var(--paper-toggle-button-label-spacing, 8px);
+        pointer-events: none;
+        color: var(--paper-toggle-button-label-color, var(--primary-text-color));
+      }
+
+      /* invalid state */
+      :host([invalid]) .toggle-bar {
+        background-color: var(--paper-toggle-button-invalid-bar-color, var(--error-color));
+      }
+
+      :host([invalid]) .toggle-button {
+        background-color: var(--paper-toggle-button-invalid-button-color, var(--error-color));
+      }
+
+      :host([invalid]) .toggle-ink {
+        color: var(--paper-toggle-button-invalid-ink-color, var(--error-color));
+      }
+    </style>
+
+    <div class="toggle-container">
+      <div id="toggleBar" class="toggle-bar"></div>
+      <div id="toggleButton" class="toggle-button"></div>
+    </div>
+
+    <div class="toggle-label"><slot></slot></div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'paper-toggle-button',
+
+      behaviors: [Polymer.PaperCheckedElementBehavior],
+
+      /** @private */
+      hostAttributes: {role: 'button', 'aria-pressed': 'false', tabindex: 0},
+
+      properties: {
+          /**
+           * Fired when the checked state changes due to user interaction.
+           *
+           * @event change
+           */
+          /**
+           * Fired when the checked state changes.
+           *
+           * @event iron-change
+           */
+      },
+
+      listeners: {track: '_ontrack'},
+
+      attached: function() {
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          Polymer.Gestures.setTouchAction(this, 'pan-y');
+        });
+      },
+
+      _ontrack: function(event) {
+        var track = event.detail;
+        if (track.state === 'start') {
+          this._trackStart(track);
+        } else if (track.state === 'track') {
+          this._trackMove(track);
+        } else if (track.state === 'end') {
+          this._trackEnd(track);
+        }
+      },
+
+      _trackStart: function(track) {
+        this._width = this.$.toggleBar.offsetWidth / 2;
+        /*
+         * keep an track-only check state to keep the dragging behavior smooth
+         * while toggling activations
+         */
+        this._trackChecked = this.checked;
+        this.$.toggleButton.classList.add('dragging');
+      },
+
+      _trackMove: function(track) {
+        var dx = track.dx;
+        this._x = Math.min(
+            this._width, Math.max(0, this._trackChecked ? this._width + dx : dx));
+        this.translate3d(this._x + 'px', 0, 0, this.$.toggleButton);
+        this._userActivate(this._x > (this._width / 2));
+      },
+
+      _trackEnd: function(track) {
+        this.$.toggleButton.classList.remove('dragging');
+        this.transform('', this.$.toggleButton);
+      },
+
+      // customize the element's ripple
+      _createRipple: function() {
+        this._rippleContainer = this.$.toggleButton;
+        var ripple = Polymer.PaperRippleBehavior._createRipple();
+        ripple.id = 'ink';
+        ripple.setAttribute('recenters', '');
+        ripple.classList.add('circle', 'toggle-ink');
+        return ripple;
+      }
+
+    });
+  </script>
+</dom-module>
 <dom-module id="data-form" assetpath="src/">
 
     <template>
@@ -36968,7 +37557,9 @@ Custom property | Description | Default
                             <div class="nav-title">
                                 Relief Information Management
                             </div>
-                            <paper-item class="nav-item" on-tap="logout">Logout</paper-item>
+                            <div class="nav-item" on-tap="logout">
+                                Logout
+                            </div>
                             <div class="powered">
                                 Powered by oecloud.io
                             </div>
@@ -37010,12 +37601,12 @@ Custom property | Description | Default
                 <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
                 <paper-toast id="toast2" class="fit-bottom" text="Network/System error, please try again" aduration="4000"></paper-toast>
 
-                
+
                 <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
                             <paper-input autofocus="" value="{{searchstring}}" id="search-input" label="Search by name,mobile,Building,GISId" on-change="dosearch">
-                                <iron-icon icon="search" slot="prefix"></iron-icon>
+                                <iron-icon icon="search" on-tap="dosearch" slot="suffix"></iron-icon>
                             </paper-input>
                             <paper-spinner id="spinner1" class="multi"></paper-spinner>
                         </div>
@@ -37592,6 +38183,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <loading-element name="loading"></loading-element>
       <login-element name="login"></login-element>
       <data-form name="home"></data-form>
+      <filter-form name="filter"></filter-form>
     </iron-pages>
 
   </template>
@@ -38259,6 +38851,566 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
         Polymer({
             is: "loading-element"
+        });
+    </script>
+</dom-module><dom-module id="filter-form" assetpath="src/">
+
+    <template>
+
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            app-header {
+                background-color: var(--app-primary-color);
+            }
+
+            .nav-menu {
+                background-color: var(--app-primary-color);
+                color: #fff;
+            }
+
+            .main-header {
+                border-bottom: 1px solid #ddd;
+                background-color: #fff;
+                color: #444;
+            }
+
+
+            .search {
+                margin: 16px auto;
+            }
+
+            .search>paper-button {
+                max-width: 200px;
+            }
+
+            #search-input {
+                width: 300px;
+            }
+
+
+            .heading-2 {
+                padding: 0px 32px;
+            }
+
+            .record-heading {
+                border-top: 1px solid rgba(0, 0, 0, 0.2);
+                margin-bottom: 2px;
+            }
+
+            .record {
+                @apply --layout-horizontal;
+                cursor: pointer;
+                padding: 0px 16px;
+                box-sizing: border-box;
+                min-height: 40px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            }
+
+            .record>* {
+                padding: 8px;
+            }
+
+            .owner_name_col {
+                width: 20%;
+            }
+
+            .gis_id_col {
+                width: 20%;
+            }
+
+            .address_col {
+                width: 60%;
+                word-wrap: break-word;
+                word-break: keep-all;
+            }
+
+            .form {
+                margin-left: 16px;
+            }
+
+            .form-header iron-icon {
+                cursor: pointer;
+            }
+
+            .nav-item {
+                width: 100%;
+            }
+
+            .nav-title {
+                font-size: 20px;
+                padding: 16px;
+            }
+
+            .powered {
+                font-size: 12px;
+                margin-top: 64px;
+                padding: 16px;
+            }
+
+            .form-header label {
+                font-size: 20px;
+                padding: 16px;
+            }
+
+            .form fieldset {
+                margin: 8px 0px;
+                background: #FFF;
+            }
+
+            .form fieldset legend {
+                letter-spacing: 0.7px;
+                text-transform: capitalize;
+                padding: 0px 4px;
+            }
+
+            .layout-2-col>* {
+                width: calc(50% - 32px);
+                padding: 0px 16px;
+            }
+
+            .savebtn {
+                height: 36px;
+                position: absolute;
+                right: 24px;
+                background-color: #ff9e2c;
+                ;
+                color: white;
+                --paper-button-raised-keyboard-focus: {
+                    background-color: var(--paper-pink-a200) !important;
+                    color: white !important;
+                }
+                ;
+            }
+
+            .espacer {
+                min-width: 100px;
+                width: 100%;
+                height: 64px;
+            }
+
+            iron-collapse {
+                margin-left: 16px;
+            }
+
+            paper-checkbox {
+                min-width: 220px;
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+            .btn {
+                height: 36px;
+                margin-top: 8px;
+            }
+        </style>
+
+        <app-drawer-layout force-narrow="">
+
+            <!-- nav panel -->
+            <app-drawer id="drawer" slot="drawer">
+                <app-header-layout has-scrolling-region="">
+
+                    <app-header fixed="" slot="header">
+
+                        <!-- top toolbar -->
+                        <app-toolbar></app-toolbar>
+
+                        <app-toolbar class="title-toolbar layout vertical center nav-title-toolbar">
+                            <div class="nav-title">
+                                Relief Information Management
+                            </div>
+                            <div class="nav-item" on-tap="logout">
+                                Logout
+                            </div>
+                            <div class="powered">
+                                Powered by oecloud.io
+                            </div>
+                        </app-toolbar>
+
+                    </app-header>
+
+
+                    <!-- nav menu -->
+                    <iron-selector class="nav-menu" attr-for-selected="name" on-iron-activate="_drawerSelected">
+                        <!-- <a name="home" href="/">Home</a>
+                                <a name="logout" href="/logout">Logout</a> -->
+                        <paper-item on-tap="_resetForm">Reset Form</paper-item>
+                    </iron-selector>
+
+                </app-header-layout>
+            </app-drawer>
+
+
+            <app-header-layout>
+
+                <app-header fixed="" effects="waterfall" class="main-header" slot="header">
+                    <!-- top toolbar -->
+                    <iron-pages id="pages" selected="[[page]]" attr-for-selected="name">
+                        <app-toolbar name="list">
+                            <paper-icon-button on-tap="openDrawer" icon="app:menu"></paper-icon-button>
+                            <div class="title">Relief Forms Search</div>
+                        </app-toolbar>
+                        <app-toolbar name="form">
+                            <paper-icon-button on-tap="gotolist" icon="icons:arrow-back"></paper-icon-button>
+                            <div class="title">Relief Form GIS ([[data.GIS_ID]])</div>
+                            <paper-spinner id="spinner2" class="multi"></paper-spinner>
+                            <paper-button on-tap="saveForm" class="savebtn" raised="">Save</paper-button>
+                        </app-toolbar>
+                    </iron-pages>
+
+                </app-header>
+
+                <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
+                <paper-toast id="toast2" class="fit-bottom" text="Network/System error, please try again" aduration="4000"></paper-toast>
+
+                <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
+                    <div name="list">
+                        <div class="search layout horizontal center-center">
+                            <paper-input autofocus="" value="{{searchstring}}" id="search-input" label="Search by name,mobile,Building,GISId" on-change="dosearch">
+                                <iron-icon icon="search" on-tap="dosearch" slot="suffix"></iron-icon>
+                            </paper-input>
+                            <paper-spinner id="spinner1" class="multi"></paper-spinner>
+                            <paper-toggle-button checked="{{advfilter}}">Advance Filter</paper-toggle-button>
+                        </div>
+                        <iron-collapse opened="[[advfilter]]">
+                            <div class="layout horizontal center-justified">
+                                <div>
+                                    <div class="layout horizontal">
+                                        <paper-checkbox value="{{filter.feedbackPending}}">Feedback Pending</paper-checkbox>
+                                        <paper-checkbox value="{{filter.anyRepairRequired}}">Any Repair Required</paper-checkbox>
+                                        <paper-checkbox value="{{filter.anyDocumentMissingRequired}}">Any Document Missing</paper-checkbox>
+                                    </div>
+                                    <div class="layout horizontal">
+                                        <paper-checkbox value="{{filter.rationCardLost}}">Ration Card Lost</paper-checkbox>
+                                        <paper-checkbox value="{{filter.buildingRepairRequired}}">Building Repair Required</paper-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layout horizontal center-justified">
+                                <paper-button class="btn" raised="" on-tap="_filterSearch">Search</paper-button>
+                            </div>
+                        </iron-collapse>
+
+                        <iron-ajax id="fetch" method="GET" content-type="application/json" on-response="_handleFetchSuccess" on-error="_handleFetchError"></iron-ajax>
+                        <div class="list-data" hidden="[[!list.length]]">
+                            <h2 class="heading-2">Matching records ([[list.length]])</h2>
+                            <div class="record record-heading">
+                                <span class="owner_name_col">Owner Name</span>
+                                <span class="gis_id_col">GIS Id</span>
+                                <span class="address_col">Address</span>
+                            </div>
+                            <template is="dom-repeat" items="{{list}}">
+                                <paper-item class="record" on-tap="_handleTap">
+                                    <span class="owner_name_col">[[item.OWNER_NAM]]</span>
+                                    <span class="gis_id_col">[[item.GIS_ID]]</span>
+                                    <span class="address_col">[[item.ADDRESS]]</span>
+                                </paper-item>
+                            </template>
+                        </div>
+
+                    </div>
+                    <div name="form" class="form">
+                        <form class="form-data-panel">
+                            <fieldset>
+                                <legend>Personal Information</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Owner Name" value="{{data.OWNER_NAM}}"></paper-input>
+                                    <paper-input label="Building Number" value="{{data.BUILDING_N}}"></paper-input>
+                                    <paper-textarea label="Address" value="{{data.ADDRESS}}"></paper-textarea>
+                                    <pkg-dropdown list="{{combo.ownrented}}" label="Owned / Rented" value="{{data.OWNEDREN}}"></pkg-dropdown>
+                                    <paper-input pattern="[0-9]+" label="Mobile no 1" value="{{data.MOBILE1}}">
+                                    </paper-input>
+                                    <paper-input pattern="[0-9]+" label="Mobile no 2" value="{{data.MOBILE2}}">
+                                    </paper-input>
+                                    <paper-input disabled="" label="GO Id" value="{{data.GOID}}"></paper-input>
+                                    <paper-input label="Gis Id" value="{{data.GIS_ID}}"></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Repair Status</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <pkg-dropdown label="Building repair required" value="{{data.BUISTRUREP}}" list="{{combo.repair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Compound wall repair required" value="{{data.COMWALREP}}" list="{{combo.repair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Carpentary work required" value="{{data.CARPWORK}}" list="{{combo.repair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Electric work required" value="{{data.ELECWORK}}" list="{{combo.repair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Plumming work required" value="{{data.PLUMWORK}}" list="{{combo.repair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Well repair required" value="{{data.WELLREPIRE}}" list="{{combo.wellrepair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="TV repair required" value="{{data.TVREQ}}" list="{{combo.lostrepair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Fridge repair required" value="{{data.FRIDGE}}" list="{{combo.lostrepair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Washing machine repair required" value="{{data.WASH_MECH}}" list="{{combo.lostrepair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Motor pump repair required" value="{{data.MOTORPUMP}}" list="{{combo.lostrepair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Computer/laptop repair required" value="{{data.COMP_LAP}}" list="{{combo.lostrepair}}"></pkg-dropdown>
+                                    <paper-textarea label="Other repairs required" value="{{data.OTHERELEC}}"></paper-textarea>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Equipments Reqired</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input type="number" label="No of Fans" value="{{data.NOFAN}}"></paper-input>
+                                    <paper-input type="number" label="No of Lights" value="{{data.NOLIGHTS}}"></paper-input>
+                                    <paper-input type="number" label="No of Cots" value="{{data.COT}}"></paper-input>
+                                    <paper-input type="number" label="No of Chairs" value="{{data.CHAIR}}"></paper-input>
+                                    <paper-input type="number" label="No of Tables" value="{{data.NOTAB}}"></paper-input>
+                                    <paper-input type="number" label="No of Mattress" value="{{data.MATRESS}}"></paper-input>
+                                    <paper-textarea label="Other furniture required" value="{{data.OTHERFUR}}"></paper-textarea>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Items lost</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <pkg-dropdown label="Sofa set lost" value="{{data.SOFA_SET}}" list="{{combo.nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Student Cycle lost" value="{{data.STUD_CYCLE}}" list="{{combo.nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Gas stove lost" value="{{data.GAS_STOVE}}" list="{{combo.nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Gas cylinder lost" value="{{data.GAS_CYLIN}}" list="{{combo.nilrepairlost}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Mixie/Grinder lost" value="{{data.MIXIE}}" list="{{combo.nilrepairlost}}"></pkg-dropdown>
+                                    <paper-textarea label="Other kitchen utensils lost" value="{{data.OTH_KITCUT}}"></paper-textarea>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Documents lost</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <pkg-dropdown label="Land record lost" value="{{data.LAND_RECRD}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Aadhar card lost" value="{{data.AADHAR}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="PAN card lost" value="{{data.PANCARD}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Ration card lost" value="{{data.RATIONCARD}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Voter ID lost" value="{{data.VOTERID}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Driving License lost" value="{{data.DRIV_LICEN}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Educational certificate lost" value="{{data.EDU_CERTI}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Passport lost" value="{{data.PASSPORT}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Birth certificate lost" value="{{data.BIRTH_CERT}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Death certificate lost" value="{{data.DEATH_CERT}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Insurance policy lost" value="{{data.INSUR_CARD}}" list="{{combo.docstatus}}"></pkg-dropdown>
+                                    <paper-textarea label="Other documents lost" value="{{data.OTHER_DOC}}"></paper-textarea>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Agriculture</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Loss of Agriculture" value="{{data.AGRI_LOST}}"></paper-input>
+                                    <paper-input label="Agriculture Loan availed" value="{{data.AGRI_LOAN}}"></paper-input>
+                                    <paper-input label="Flood line (in meters)" value="{{data.FLOODLINMT}}"></paper-input>
+                                    <paper-input label="Cow missing" value="{{data.COW_MISS}}"></paper-input>
+                                    <paper-input label="Goat missing" value="{{data.GOAT_MISS}}"></paper-input>
+                                    <paper-input label="Any poultry lost" value="{{data.POULTRYLOS}}"></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Other details</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <pkg-dropdown label="Damage assessment" value="{{data.DAMAGEASM}}" list="{{combo.damaged}}"></pkg-dropdown>
+                                    <paper-input label="Cleaning hours" value="{{data.CLEANHRS}}"></paper-input>
+                                    <paper-input label="Primary means of Living" value="{{data.PMOFLIV}}"></paper-input>
+                                    <paper-input label="Most Disastrous Loss" value="{{data.MOSTDISLOS}}"></paper-input>
+                                    <pkg-dropdown label="Cloth Required" value="{{data.CLOTH_REQ}}" list="{{combo.yesno}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Utensils required" value="{{data.UTEN_REQ}}" list="{{combo.yesno}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Grocery required" value="{{data.GROCERY_REQ}}" list="{{combo.yesno}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Chair Type" value="{{data.CHAR_TYPE}}" list="{{combo.chairtype}}"></pkg-dropdown>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Family Details</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <paper-input label="Anyone missing in family" value="{{data.PEOPLEMIS}}"></paper-input>
+                                    <paper-input type="number" label="Number of members in family" value="{{data.NUM_MEMBERS}}"></paper-input>
+                                    <paper-input type="number" label="Age Group 1 to 5" value="{{data.AGE1TO5}}"></paper-input>
+                                    <paper-input type="number" label="Age Group 5 to 10" value="{{data.AGE5TO10}}"></paper-input>
+                                    <paper-input type="number" label="Age Group 10 to 18" value="{{data.AG15TO18}}"></paper-input>
+                                    <paper-input type="number" label="Age Group 18 to 60" value="{{data.AG18TO60}}"></paper-input>
+                                    <paper-input type="number" label="Number of Senior Citizen" value="{{data.AGE60ABOVE}}"></paper-input>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Contact and Feedback</legend>
+                                <div class="layout horizontal layout-2-col wrap">
+                                    <pkg-dropdown label="Survey Feedback" value="{{data.FEEDBACK}}" list="{{combo.feedback}}"></pkg-dropdown>
+                                    <paper-textarea label="Remarks" value="{{data.REMARKS}}"></paper-textarea>
+                                    <paper-input label="Contact person" value="{{data.CONT_PERSO}}"></paper-input>
+                                    <paper-input label="Contact mobile" value="{{data.CONT_MOB}}"></paper-input>
+                                </div>
+                            </fieldset>
+                            <div class="espacer">
+
+                            </div>
+                        </form>
+                    </div>
+                </iron-pages>
+                <iron-ajax id="xhr" content-type="application/json" handle-as="json" on-response="handleResponse" on-error="handleError"></iron-ajax>
+            </app-header-layout>
+        </app-drawer-layout>
+
+
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'filter-form',
+
+            properties: {
+                searchstring: {
+                    type: String
+                },
+                list: {
+                    type: Array,
+                    value: function () {
+                        return [];
+                    }
+                },
+                advfilter : {
+                    type: Boolean,
+                    value : true
+                },
+                filter: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    }
+                },
+                combo: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            repair: ["NIL", "YES", "NO", "REPAIR", "ALREADY REPAIRED"],
+                            nilrepairlost: ["NIL", "REPAIR", "LOST"],
+                            lostrepair: ["YES", "NO", "LOST", "REPAIR", "ALREADY REPAIRED"],
+                            wellrepair: ["YES", "NO", "CLEAN & REPAIR", "ALREADY REPAIRED"],
+                            docstatus: ["NIL", "LOST", "DAMAGED", "ALREADY OBTAINED"],
+                            chairtype: ["Living", "Dining"],
+                            damaged: ["FULLY DAMAGED", "PARTLY DAMAGED", "NO DAMAGE"],
+                            yesno: ["YES", "NO"],
+                            feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
+                            ownrented: ["OWNED", "RENTED"]
+                        }
+                    }
+                }
+            },
+            logout: function () {
+                this.fire('user-logout');
+            },
+            openDrawer: function () {
+                //this.fire('app-open-drawer');
+                this.$.drawer.open();
+            },
+            attached: function () {
+                this.set('page', 'list');
+            },
+            gotolist: function () {
+                this.set('page', 'list');
+            },
+            saveForm: function () {
+                var auth_token = localStorage.getItem('auth_token');
+                if (this.data.id) {
+                    this.$.xhr.method = 'PUT'
+                    this.$.xhr.url = "/api/formdata?access_token=" + auth_token;
+                } else {
+                    this.$.xhr.method = 'POST'
+                    this.$.xhr.url = "/api/formdata/"; + this.data.id + "?access_token=" + auth_token;
+                }
+                this.$.xhr.body = this.data;
+                this.$.spinner2.active = true;
+                this.$.xhr.generateRequest();
+            },
+            _search : function() {
+                var upperString = this.searchstring.toUpperCase();
+                var auth_token = localStorage.getItem('auth_token');
+                var fullfilter = {};
+                var conditions = [];
+                if (this.searchstring.length >= 10) {
+                    conditions.push({
+                        MOBILE1: this.searchstring
+                    });
+                    conditions.push({
+                        MOBILE2: this.searchstring
+                    });
+                }
+                conditions.push({
+                    OWNER_NAM: {
+                        like: upperString
+                    }
+                });
+                conditions.push({
+                    OWNER_NAM: {
+                        like: this.searchstring
+                    }
+                });
+                conditions.push({
+                    GIS_ID: {
+                        inq: [upperString, this.searchstring]
+                    }
+                });
+                conditions.push({
+                    BUILDING_N: this.searchstring
+                });
+
+                if (this.advfilter) {
+                    var andFilter = [];
+                    if (this.filter.buildingRepairRequired) {
+                        andFilter.push({BUISTRUREP : {inq : ['YES', 'REPAIR']}});
+                    }
+                    fullfilter = {
+                        where : {
+                            and : andFilter
+                        },
+                        limit: 200
+                    }
+                }  
+                else
+                {
+                    fullfilter = {
+                        where: {
+                            or: conditions
+                        },
+                        limit: 20
+                    };
+                }
+
+                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" 
+                        + JSON.stringify(fullfilter);
+                this.set('loaderVisible', true);
+                //this.$.spinner.active = true;
+                //this.$.fetch.body = JSON.stringify(body);
+                this.$.spinner1.active = true;
+                this.$.fetch.generateRequest();
+            },
+            dosearch: function () {
+                if (this.searchstring == "") {
+                    this.set('list', []);
+                    return;
+                }
+                if (this.searchstring.length < 3) {
+                    //raise toast
+                    return;
+                }
+                this._search();
+            },
+            _filterSearch : function() {
+                this._search();
+            },
+            _handleFetchSuccess: function (e) {
+                this.set('list', e.detail.response);
+                this.$.spinner1.active = false;
+                console.log('number of forms found ', this.list.length);
+            },
+            _handleFetchError: function (e) {
+                this.$.toast2.open();
+                this.$.spinner1.active = false;
+            },
+            _handleTap: function (e) {
+                console.log('model ', e.model.item);
+                this.set('data', e.model.item);
+                this.set('page', 'form');
+            },
+            handleResponse: function (e) {
+                this.$.toast1.open();
+                this.$.spinner2.active = false;
+                if (e.detail.response) {
+                    this.data = e.detail.response;
+                }
+                this.set('page', 'list');
+            },
+            handleError: function (e) {
+                this.$.spinner2.active = false;
+                this.$.toast2.open();
+            }
         });
     </script>
 </dom-module></div></body></html>
