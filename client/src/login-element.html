@@ -109,6 +109,9 @@
         <div class="layout horizontal center-justified ">
            <paper-button class="login-btn" primary on-tap="doLogin">Login</paper-button>
         </div>
+        <div class="layout horizontal center-justified ">
+            <paper-button class="login-btn" on-tap="tryDonate">Donate</paper-button>
+          </div>
       </div>
     </div>
  
@@ -156,6 +159,9 @@
       },
       doLogin: function (e) {
         this._login(e);
+      },
+      tryDonate: function(e) {
+           Instamojo.open("https://www.instamojo.com/@pkgulati");
       },
       _handleLoginError: function (event) {
         this.set('loaderVisible', false);
