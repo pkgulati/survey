@@ -39094,6 +39094,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                             <pkg-dropdown id="missingDocument" list="{{combo.missingDocument}}" label="Document Missing" value="{{filter.missingDocument}}"></pkg-dropdown>
                                             <paper-icon-button class="small" icon="icons:close" on-tap="clearMissing"></paper-icon-button>
                                         </div>
+                                        <div class="layout horizontal center-center">
+                                                <pkg-dropdown id="itemLost" list="{{combo.itemLost}}" label="Item Lost/Repair" value="{{filter.itemLost}}"></pkg-dropdown>
+                                                <paper-icon-button class="small" icon="icons:close" on-tap="clearItems"></paper-icon-button>
+                                        </div>
+                                        <div class="layout horizontal center-center">
+                                                <pkg-dropdown id="equipmentRequired" list="{{combo.equipmentRequired}}" label="Equipment Required" value="{{filter.equipmentRequired}}"></pkg-dropdown>
+                                                <paper-icon-button class="small" icon="icons:close" on-tap="clearEquipment"></paper-icon-button>
+                                        </div>
                                     </div>
                                     <div class="action layout horizontal">
                                         <paper-checkbox checked="{{filter.feedbackPending}}">Feedback Pending</paper-checkbox>
@@ -39301,7 +39309,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
                             ownrented: ["OWNED", "RENTED"],
                             missingDocument: ["Aadhar", "Land record", "PAN card", "Ration card", "Voter ID", "Driving License", "Educational certificate", "Passport", "Birth certificate", "Death certificate", "Insurance policy"],
-                            repairRequired: ["Building", "Compound Wall", "Carpentary", "Electric", "Plumming", "Well", "TV", "Fridge", "Washing machine", "Motor pump", "Computer/laptop"]
+                            repairRequired: ["Building", "Compound Wall", "Carpentary", "Electric", "Plumming", "Well", "TV", "Fridge", "Washing machine", "Motor pump", "Computer/laptop"],
+                            itemLost : ["Sofa set", "Student Cycle", "Gas stove", "Gas cylinder", "Mixie/Grinder"],
+                            equipmentRequired : ["Fans", "Lights", "Cots", "Chair", "Tables", "Mattress"]
                         }
                     }
                 },
@@ -39310,7 +39320,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     value: function () {
                         return {
                             missingDocument: ["AADHAR", "LAND_RECRD", "PANCARD", "RATIONCARD", "VOTERID", "DRIV_LICEN", "EDU_CERTI", "PASSPORT", "BIRTH_CERT", "DEATH_CERT", "INSUR_CARD"],
-                            repairRequired: ["BUISTRUREP", "COMWALREP", "CARPWORK", "ELECWORK", "PLUMWORK", "WELLREPIRE", "TVREQ", "FRIDGE", "WASH_MECH", "MOTORPUMP", "COMP_LAP"]
+                            repairRequired: ["BUISTRUREP", "COMWALREP", "CARPWORK", "ELECWORK", "PLUMWORK", "WELLREPIRE", "TVREQ", "FRIDGE", "WASH_MECH", "MOTORPUMP", "COMP_LAP"],
+                            itemLost : ["SOFA_SET", "STUD_CYCLE", "GAS_STOVE", "GAS_CYLIN", "MIXIE"],
+                            equipmentRequired : ["NOFAN", "NOLIGHTS", "COT", "CHAIR", "NOTAB", "MATRESS"]
                         };
                     }
                 }
@@ -39323,6 +39335,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
             clearRepair: function () {
                 this.set('filter.repairRequired', "");
+            },
+            clearItems : function () {
+                this.set('filter.itemLost', "");
+            }, 
+            clearEquipment : function () {
+                this.set('filter.equipmentRequired', "");
             },
             openDrawer: function () {
                 //this.fire('app-open-drawer');
@@ -39399,6 +39417,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     if (this.filter.cowMissing) {
                         andFilter.push({ COW_MISS: { inq: ['YES', 'LOST'] } });
                     }
+                   
                     if (this.filter.anyRepairRequired) {
                         var l1 = [
                             { BUISTRUREP: { inq: ['YES', 'REPAIR'] } },
@@ -39434,7 +39453,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     if (this.filter.repairRequired) {
                         var idx = this.combo.repairRequired.indexOf(this.filter.repairRequired);
                         if (idx >= 0) {
-                            debugger;
                             var field = this.fields.repairRequired[idx];
                             var condition = {};
                             condition[field] = { inq: ['YES', 'REPAIR'] };
@@ -39444,10 +39462,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     if (this.filter.missingDocument) {
                         var idx = this.combo.missingDocument.indexOf(this.filter.missingDocument);
                         if (idx >= 0) {
-                            debugger;
                             var field = this.fields.missingDocument[idx];
                             var condition = {};
                             condition[field] = { inq: ["LOST", "DAMAGED"] };
+                            andFilter.push(condition);
+                        }
+                    }
+                    if (this.filter.itemLost) {
+                        var idx = this.combo.itemLost.indexOf(this.filter.itemLost);
+                        if (idx >= 0) {
+                            var field = this.fields.itemLost[idx];
+                            var condition = {};
+                            condition[field] = { inq: ["LOST", "REPAIR"] };
+                            andFilter.push(condition);
+                        }
+                    }
+                    if (this.filter.equipmentRequired) {
+                        var idx = this.combo.equipmentRequired.indexOf(this.filter.equipmentRequired);
+                        if (idx >= 0) {
+                            var field = this.fields.equipmentRequired[idx];
+                            var condition = {};
+                            condition[field] = { gt: 0 };
                             andFilter.push(condition);
                         }
                     }
