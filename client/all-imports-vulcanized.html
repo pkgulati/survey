@@ -38818,7 +38818,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </template>
             </paper-listbox>
         </paper-dropdown-menu>
-
+        
     </template>
 
 
@@ -39001,6 +39001,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 height: 36px;
                 margin-top: 8px;
             }
+
+            .small {
+                width: 32px;
+                height: 32px;
+                margin-top: 16px;
+            }
+
+            .action {
+                margin-top: 8px;
+            }
         </style>
 
         <app-drawer-layout force-narrow="">
@@ -39061,7 +39071,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <paper-toast id="toast1" class="fit-bottom" text="Saved successfully" aduration="4000"></paper-toast>
                 <paper-toast id="toast2" class="fit-bottom" text="Network/System error, please try again" aduration="4000"></paper-toast>
-
+                <paper-toast id="toast3" class="fit-bottom" text="Please provide some search criteria" aduration="4000"></paper-toast>
+                
                 <iron-pages flex="" id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
@@ -39075,20 +39086,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <div class="layout horizontal center-justified">
                                 <div>
                                     <div class="layout horizontal">
+                                        <div style="margin-right:16px;" class="layout horizontal center-center">
+                                            <pkg-dropdown id="repairRequired" list="{{combo.repairRequired}}" label="Repair Required" value="{{filter.repairRequired}}"></pkg-dropdown>
+                                            <paper-icon-button class="small" icon="icons:close" on-tap="clearRepair"></paper-icon-button>
+                                        </div>
+                                        <div class="layout horizontal center-center">
+                                            <pkg-dropdown id="missingDocument" list="{{combo.missingDocument}}" label="Document Missing" value="{{filter.missingDocument}}"></pkg-dropdown>
+                                            <paper-icon-button class="small" icon="icons:close" on-tap="clearMissing"></paper-icon-button>
+                                        </div>
+                                    </div>
+                                    <div class="action layout horizontal">
                                         <paper-checkbox checked="{{filter.feedbackPending}}">Feedback Pending</paper-checkbox>
                                         <paper-checkbox checked="{{filter.haveRemarks}}">Have Remarks</paper-checkbox>
-                                        <paper-checkbox checked="{{filter.anyRepairRequired}}">Any Repair Required</paper-checkbox>
-                                        <paper-checkbox checked="{{filter.anyDocumentMissing}}">Any Document Missing</paper-checkbox>
-                                    </div>
-                                    <div class="layout horizontal">
-                                        <paper-checkbox checked="{{filter.rationCardLost}}">Ration Card Lost</paper-checkbox>
-                                        <paper-checkbox checked="{{filter.buildingRepairRequired}}">Building Repair Required</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.goatMissing}}">Goat Missing</paper-checkbox>
+                                        <paper-checkbox checked="{{filter.cowMissing}}">Cow Missing</paper-checkbox>
                                     </div>
                                 </div>
                             </div>
-                            <div class="layout horizontal center-justified">
+                            <div class="action layout horizontal center-justified">
                                 <paper-button class="btn" raised="" on-tap="_filterSearch">Search</paper-button>
-                                <paper-item>Max 200 records</paper-item>
+                                <paper-item>Max 500 records</paper-item>
                             </div>
                         </iron-collapse>
 
@@ -39190,8 +39207,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     <paper-input label="Loss of Agriculture" value="{{data.AGRI_LOST}}"></paper-input>
                                     <paper-input label="Agriculture Loan availed" value="{{data.AGRI_LOAN}}"></paper-input>
                                     <paper-input label="Flood line (in meters)" value="{{data.FLOODLINMT}}"></paper-input>
-                                    <paper-input label="Cow missing" value="{{data.COW_MISS}}"></paper-input>
-                                    <paper-input label="Goat missing" value="{{data.GOAT_MISS}}"></paper-input>
+                                    <pkg-dropdown label="Cow missing" value="{{data.COW_MISS}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Goat missing" value="{{data.GOAT_MISS}}"></pkg-dropdown>
                                     <paper-input label="Any poultry lost" value="{{data.POULTRYLOS}}"></paper-input>
                                 </div>
                             </fieldset>
@@ -39257,15 +39274,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         return [];
                     }
                 },
-                advfilter : {
+                advfilter: {
                     type: Boolean,
-                    value : false
+                    value: false
                 },
                 filter: {
                     type: Object,
                     value: function () {
                         return {
-                            feedbackPending : true
                         };
                     }
                 },
@@ -39273,6 +39289,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     type: Object,
                     value: function () {
                         return {
+                            lost: ["NIL", "YES", "NO", "LOST"],
                             repair: ["NIL", "YES", "NO", "REPAIR", "ALREADY REPAIRED"],
                             nilrepairlost: ["NIL", "REPAIR", "LOST"],
                             lostrepair: ["YES", "NO", "LOST", "REPAIR", "ALREADY REPAIRED"],
@@ -39282,13 +39299,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             damaged: ["FULLY DAMAGED", "PARTLY DAMAGED", "NO DAMAGE"],
                             yesno: ["YES", "NO"],
                             feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
-                            ownrented: ["OWNED", "RENTED"]
+                            ownrented: ["OWNED", "RENTED"],
+                            missingDocument: ["Aadhar", "Land record", "PAN card", "Ration card", "Voter ID", "Driving License", "Educational certificate", "Passport", "Birth certificate", "Death certificate", "Insurance policy"],
+                            repairRequired: ["Building", "Compound Wall", "Carpentary", "Electric", "Plumming", "Well", "TV", "Fridge", "Washing machine", "Motor pump", "Computer/laptop"]
                         }
+                    }
+                },
+                fields: {
+                    type: Object,
+                    value: function () {
+                        return {
+                            missingDocument: ["AADHAR", "LAND_RECRD", "PANCARD", "RATIONCARD", "VOTERID", "DRIV_LICEN", "EDU_CERTI", "PASSPORT", "BIRTH_CERT", "DEATH_CERT", "INSUR_CARD"],
+                            repairRequired: ["BUISTRUREP", "COMWALREP", "CARPWORK", "ELECWORK", "PLUMWORK", "WELLREPIRE", "TVREQ", "FRIDGE", "WASH_MECH", "MOTORPUMP", "COMP_LAP"]
+                        };
                     }
                 }
             },
             logout: function () {
                 this.fire('user-logout');
+            },
+            clearMissing: function () {
+                this.set('filter.missingDocument', "");
+            },
+            clearRepair: function () {
+                this.set('filter.repairRequired', "");
             },
             openDrawer: function () {
                 //this.fire('app-open-drawer');
@@ -39313,7 +39347,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.spinner2.active = true;
                 this.$.xhr.generateRequest();
             },
-            _search : function() {
+            _search: function () {
                 var upperString = this.searchstring.toUpperCase();
                 var auth_token = localStorage.getItem('auth_token');
                 var fullfilter = {};
@@ -39348,62 +39382,87 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (this.advfilter) {
                     var andFilter = [];
                     if (this.searchstring != "" && conditions.length > 0) {
-                        andFilter.push({or:conditions})
+                        andFilter.push({ or: conditions })
                     }
                     if (this.filter.noRemarks) {
-                        andFilter.push({exists :  {REMARKS : false} });
+                        andFilter.push({ exists: { REMARKS: false } });
                     }
                     if (this.filter.haveRemarks) {
-                        andFilter.push({REMARKS : {gt : ""} });
+                        andFilter.push({ REMARKS: { gt: "" } });
                     }
                     if (this.filter.buildingRepairRequired) {
-                        andFilter.push({BUISTRUREP : {inq : ['YES', 'REPAIR']}});
+                        andFilter.push({ BUISTRUREP: { inq: ['YES', 'REPAIR'] } });
+                    }
+                    if (this.filter.goatMissing) {
+                        andFilter.push({ GOAT_MISS: { inq: ['YES', 'LOST'] } });
+                    }
+                    if (this.filter.cowMissing) {
+                        andFilter.push({ COW_MISS: { inq: ['YES', 'LOST'] } });
                     }
                     if (this.filter.anyRepairRequired) {
                         var l1 = [
-                            {BUISTRUREP : {inq : ['YES', 'REPAIR']}},
-                            {COMWALREP : {inq : ['YES', 'REPAIR']}},
-                            {CARPWORK : {inq : ['YES', 'REPAIR']}},
-                            {PLUMWORK : {inq : ['YES', 'REPAIR']}},
-                            {WELLREPIRE : {inq : ['YES', 'REPAIR']}},
+                            { BUISTRUREP: { inq: ['YES', 'REPAIR'] } },
+                            { COMWALREP: { inq: ['YES', 'REPAIR'] } },
+                            { CARPWORK: { inq: ['YES', 'REPAIR'] } },
+                            { PLUMWORK: { inq: ['YES', 'REPAIR'] } },
+                            { WELLREPIRE: { inq: ['YES', 'REPAIR'] } },
                         ]
-                        andFilter.push({or:l1});
+                        andFilter.push({ or: l1 });
                     }
-                   
+
                     if (this.filter.anyDocumentMissing) {
                         var l1 = [
-                            {LAND_RECRD : {inq : ['LOST', 'DAMAGED']}},
-                            {AADHAR : {inq : ['LOST', 'DAMAGED']}},
-                            {PANCARD : {inq : ['LOST', 'DAMAGED']}},
-                            {VOTERID : {inq : ['LOST', 'DAMAGED']}},
-                            {DRIV_LICEN : {inq : ['LOST', 'DAMAGED']}},
-                            {EDU_CERTI : {inq : ['LOST', 'DAMAGED']}},
-                            {PASSPORT : {inq : ['LOST', 'DAMAGED']}},
-                            {DEATH_CERT : {inq : ['LOST', 'DAMAGED']}},
-                            {INSUR_CARD : {inq : ['LOST', 'DAMAGED']}},
-                            {RATIONCARD : {inq : ['LOST', 'DAMAGED']}}
+                            { LAND_RECRD: { inq: ['LOST', 'DAMAGED'] } },
+                            { AADHAR: { inq: ['LOST', 'DAMAGED'] } },
+                            { PANCARD: { inq: ['LOST', 'DAMAGED'] } },
+                            { VOTERID: { inq: ['LOST', 'DAMAGED'] } },
+                            { DRIV_LICEN: { inq: ['LOST', 'DAMAGED'] } },
+                            { EDU_CERTI: { inq: ['LOST', 'DAMAGED'] } },
+                            { PASSPORT: { inq: ['LOST', 'DAMAGED'] } },
+                            { DEATH_CERT: { inq: ['LOST', 'DAMAGED'] } },
+                            { INSUR_CARD: { inq: ['LOST', 'DAMAGED'] } },
+                            { RATIONCARD: { inq: ['LOST', 'DAMAGED'] } }
                         ]
-                        andFilter.push({or:l1});
+                        andFilter.push({ or: l1 });
                     }
                     if (this.filter.rationCardLost) {
-                        andFilter.push({RATIONCARD : {inq : ["LOST", "DAMAGED"]}});
+                        andFilter.push({ RATIONCARD: { inq: ["LOST", "DAMAGED"] } });
                     }
                     if (this.filter.feedbackPending) {
-                        andFilter.push({FEEDBACK : {nin : ["Modest", "Pleasing", "Ok", "Arrogant"]}});
+                        andFilter.push({ FEEDBACK: { nin: ["Modest", "Pleasing", "Ok", "Arrogant"] } });
                     }
-                    console.log(andFilter);
+                    if (this.filter.repairRequired) {
+                        var idx = this.combo.repairRequired.indexOf(this.filter.repairRequired);
+                        if (idx >= 0) {
+                            debugger;
+                            var field = this.fields.repairRequired[idx];
+                            var condition = {};
+                            condition[field] = { inq: ['YES', 'REPAIR'] };
+                            andFilter.push(condition);
+                        }
+                    }
+                    if (this.filter.missingDocument) {
+                        var idx = this.combo.missingDocument.indexOf(this.filter.missingDocument);
+                        if (idx >= 0) {
+                            debugger;
+                            var field = this.fields.missingDocument[idx];
+                            var condition = {};
+                            condition[field] = { inq: ["LOST", "DAMAGED"] };
+                            andFilter.push(condition);
+                        }
+                    }
                     if (andFilter.length == 0) {
+                        this.$.toast3.open();
                         return;
                     }
                     fullfilter = {
-                        where : {
-                            and : andFilter
+                        where: {
+                            and: andFilter
                         },
-                        limit: 200
+                        limit: 500
                     }
-                }  
-                else
-                {
+                }
+                else {
                     fullfilter = {
                         where: {
                             or: conditions
@@ -39412,8 +39471,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     };
                 }
 
-                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter=" 
-                        + JSON.stringify(fullfilter);
+                this.$.fetch.url = "/api/formdata?access_token=" + auth_token + "&filter="
+                    + JSON.stringify(fullfilter);
                 this.set('loaderVisible', true);
                 //this.$.spinner.active = true;
                 //this.$.fetch.body = JSON.stringify(body);
@@ -39431,7 +39490,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 this._search();
             },
-            _filterSearch : function() {
+            _filterSearch: function () {
                 this._search();
             },
             _handleFetchSuccess: function (e) {
@@ -39444,7 +39503,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.spinner1.active = false;
             },
             _handleTap: function (e) {
-                console.log('model ', e.model.item);
                 this.set('data', e.model.item);
                 this.set('page', 'form');
             },
