@@ -19,6 +19,10 @@ oeApp.boot(app, options, function () {
   app.start();
 });
 
+app.get('/donate', function (req, res) {
+    res.sendFile('donate.html', { root: path.join(__dirname, '../client/') });    
+});
+
 app.get('/', function (req, res) {
   if (req.get('host') == 'localhost:3000') {
     res.sendFile('index.html', { root: path.join(__dirname, '../client/') });    
