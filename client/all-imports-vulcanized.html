@@ -39162,7 +39162,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     <pkg-dropdown label="Compound wall repair required" value="{{data.COMWALREP}}" list="{{combo.repair}}"></pkg-dropdown>
                                     <pkg-dropdown label="Carpentary work required" value="{{data.CARPWORK}}" list="{{combo.repair}}"></pkg-dropdown>
                                     <pkg-dropdown label="Electric work required" value="{{data.ELECWORK}}" list="{{combo.repair}}"></pkg-dropdown>
-                                    <pkg-dropdown label="Plumming work required" value="{{data.PLUMWORK}}" list="{{combo.repair}}"></pkg-dropdown>
+                                    <pkg-dropdown label="Plumbing work required" value="{{data.PLUMWORK}}" list="{{combo.repair}}"></pkg-dropdown>
                                     <pkg-dropdown label="Well repair required" value="{{data.WELLREPIRE}}" list="{{combo.wellrepair}}"></pkg-dropdown>
                                     <pkg-dropdown label="TV repair required" value="{{data.TVREQ}}" list="{{combo.lostrepair}}"></pkg-dropdown>
                                     <pkg-dropdown label="Fridge repair required" value="{{data.FRIDGE}}" list="{{combo.lostrepair}}"></pkg-dropdown>
@@ -39312,8 +39312,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             feedback: ["Modest", "Pleasing", "Ok", "Arrogant"],
                             ownrented: ["OWNED", "RENTED"],
                             missingDocument: ["Aadhar", "Land record", "PAN card", "Ration card", "Voter ID", "Driving License", "Educational certificate", "Passport", "Birth certificate", "Death certificate", "Insurance policy"],
-                            repairRequired: ["Building", "Compound Wall", "Carpentary", "Electric", "Plumming", "Well", "TV", "Fridge", "Washing machine", "Motor pump", "Computer/laptop"],
-                            itemLost : ["Sofa set", "Student Cycle", "Gas stove", "Gas cylinder", "Mixie/Grinder"],
+                            repairRequired: ["Building", "Compound Wall", "Carpentary", "Electric", "Plumbing", "Well", "TV", "Fridge", "Washing machine", "Motor pump", "Computer/laptop"],
+                            itemLost : ["Sofa set", "Student Cycle", "Gas stove", "Gas cylinder", "Mixie/Grinder", "Other Kitchen Items"],
                             equipmentRequired : ["Fans", "Lights", "Cots", "Chair", "Tables", "Mattress"]
                         }
                     }
@@ -39472,12 +39472,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         }
                     }
                     if (this.filter.itemLost) {
-                        var idx = this.combo.itemLost.indexOf(this.filter.itemLost);
-                        if (idx >= 0) {
-                            var field = this.fields.itemLost[idx];
-                            var condition = {};
-                            condition[field] = { inq: ["LOST", "REPAIR"] };
-                            andFilter.push(condition);
+                        if (this.filter.itemLost == "Other Kitchen Items") {
+                            andFilter.push({ OTH_KITCUT: { gt: "" } });
+                        }
+                        else {
+                            var idx = this.combo.itemLost.indexOf(this.filter.itemLost);
+                            if (idx >= 0) {
+                                var field = this.fields.itemLost[idx];
+                                var condition = {};
+                                condition[field] = { inq: ["LOST", "REPAIR"] };
+                                andFilter.push(condition);
+                            }
                         }
                     }
                     if (this.filter.equipmentRequired) {
