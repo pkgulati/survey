@@ -58,14 +58,24 @@
                 width: 20%;
             }
 
-            .gis_id_col {
-                width: 20%;
+           
+
+            .building_n_col {
+                width: 15%;
+            }
+
+            .phone_col {
+                width: 15%;
             }
 
             .address_col {
-                width: 60%;
+                width: 40%;
                 word-wrap: break-word;
                 word-break: keep-all;
+            }
+
+            .gis_id_col {
+                width: 10%;
             }
 
             .form {
@@ -221,7 +231,7 @@
                 <iron-pages flex id="pages" selected="[[page]]" attr-for-selected="name" selected-attribute="page-selected">
                     <div name="list">
                         <div class="search layout horizontal center-center">
-                            <paper-input autofocus value={{searchstring}} id="search-input" label="Search by name,mobile,Building,GISId" on-change="dosearch">
+                            <paper-input autofocus value={{searchstring}} id="search-input" label="Search by name,mobile,Building etc." on-change="dosearch">
                                 <iron-icon icon="search" on-tap="dosearch" slot="suffix"></iron-icon>
                             </paper-input>
                             <paper-spinner id="spinner1" class="multi"></paper-spinner>
@@ -267,14 +277,18 @@
                             <h2 class="heading-2">Matching records ([[list.length]])</h2>
                             <div class="record record-heading">
                                 <span class="owner_name_col">Owner Name</span>
-                                <span class="gis_id_col">GIS Id</span>
+                                <span class="building_n_col">Building No.</span>
+                                <span class="phone_col">Phone</span>
                                 <span class="address_col">Address</span>
+                                <span class="gis_id_col">GIS Id</span>
                             </div>
                             <template is="dom-repeat" items={{list}}>
                                 <paper-item class="record" on-tap="_handleTap">
                                     <span class="owner_name_col">[[item.OWNER_NAM]]</span>
-                                    <span class="gis_id_col">[[item.GIS_ID]]</span>
+                                    <span class="building_n_col" >[[item.BUILDING_N]]</span>
+                                    <span class="phone_col" >[[item.MOBILE1]]</span>
                                     <span class="address_col">[[item.ADDRESS]]</span>
+                                    <span class="gis_id_col">[[item.GIS_ID]]</span>
                                 </paper-item>
                             </template>
                         </div>
